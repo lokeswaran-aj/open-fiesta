@@ -198,3 +198,14 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+@layer components {
+  .code-block-content pre,
+  .code-block-content code {
+    background-color: transparent !important;
+  }
+  
+  .code-block-content {
+    background-color: hsl(var(--card)) !important;
+  }
+}
