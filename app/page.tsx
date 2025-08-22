@@ -1,68 +1,13 @@
-import Link from "next/link";
+import { Footer } from "@/components/footer";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center max-w-2xl">
-        <div className="flex items-center gap-2">
-          <Logo className="h-10 w-10" />
-          <h1 className="text-4xl font-bold">Open Fiesta</h1>
-        </div>
-        <p className="text-lg text-center">
-          An open source version of{" "}
-          <Link
-            href="https://aifiesta.ai"
-            className="underline underline-offset-4"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            AI Fiesta
-          </Link>{" "}
-          built with Vercel's Ecosystem like Next.js, AI SDK, AI Elements and AI
-          Gateway, Shadcn UI, Tailwind CSS, Better Auth, and more.
-        </p>
+    <div className="max-w-4xl mx-auto relative size-full p-4 h-dvh">
+      <main className="flex flex-col h-full items-center gap-2">
+        <div className="h-full flex-1">Conversation</div>
+        <div className="mt-4">Prompt Input</div>
+        <Footer />
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <p>
-          Built with ❤️ by{" "}
-          <Link
-            href="https://lokeswaran.dev"
-            className="underline underline-offset-4"
-            target="_blank"
-          >
-            Lokeswaran Aruljothy
-          </Link>
-        </p>
-        <p>•</p>
-        <Link
-          href="https://github.com/lokeswaran-aj/open-fiesta"
-          className="underline underline-offset-4"
-          target="_blank"
-        >
-          View on GitHub
-        </Link>
-      </footer>
     </div>
   );
 }
-
-export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    data-logo="logo"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 41 41"
-    aria-labelledby="logo-title"
-    {...props}
-  >
-    <title id="logo-title">Open Fiesta</title>
-    <g id="logogram" transform="translate(0, 0) rotate(0) ">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M8.84356 3.79785C7.4129 4.79821 6.1192 5.98096 4.99615 7.31238C9.58545 6.88631 15.416 7.58203 22.1852 10.9667C29.4138 14.5809 35.2346 14.7031 39.2856 13.9217C38.918 12.8088 38.4552 11.7392 37.9071 10.7224C33.2698 11.2115 27.3248 10.5641 20.3964 7.09996C15.9968 4.90016 12.1186 3.99399 8.84356 3.79785ZM35.1982 6.86663C31.5361 2.77498 26.2142 0.199982 20.2908 0.199982C18.5513 0.199982 16.8635 0.422089 15.2545 0.839462C17.4337 1.43407 19.7487 2.30397 22.1852 3.52225C27.2578 6.05851 31.6372 6.87514 35.1982 6.86663ZM40.1517 17.8281C35.2577 18.7945 28.4996 18.596 20.3964 14.5444C12.8208 10.7566 6.79126 10.8043 2.72473 11.708C2.51483 11.7546 2.30987 11.8036 2.10986 11.8546C1.57745 13.0125 1.15247 14.2301 0.847534 15.4945C1.17322 15.4075 1.50976 15.3248 1.85699 15.2476C6.7904 14.1513 13.7609 14.1989 22.1852 18.4111C29.7609 22.1989 35.7904 22.1512 39.857 21.2475C39.9963 21.2166 40.1336 21.1846 40.2686 21.1516C40.2834 20.8363 40.2908 20.519 40.2908 20.2C40.2908 19.3975 40.2436 18.606 40.1517 17.8281ZM39.6156 25.3723C34.7691 26.2196 28.2078 25.8944 20.3964 21.9888C12.8208 18.201 6.79126 18.2487 2.72473 19.1524C1.82208 19.3529 1.01007 19.5972 0.293763 19.8551C0.29181 19.9698 0.290833 20.0848 0.290833 20.2C0.290833 31.2457 9.24512 40.2 20.2908 40.2C29.5479 40.2 37.3361 33.9109 39.6156 25.3723Z"
-        fill="#7F57F1"
-      />
-    </g>
-    <g id="logotype" transform="translate(41, 20.5)" />
-  </svg>
-);
