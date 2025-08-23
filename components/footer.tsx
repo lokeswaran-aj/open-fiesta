@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { siteConfig } from "@/lib/config";
 
 export const Footer = () => {
   return (
@@ -15,7 +16,7 @@ export const Footer = () => {
       </p>
       <p>•</p>
       <Link
-        href="https://github.com/lokeswaran-aj/open-fiesta"
+        href={siteConfig.links.github}
         className="underline underline-offset-4"
         target="_blank"
       >

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
+import { siteConfig } from "@/lib/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,11 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Open Fiesta",
-  description:
-    "Open Fiesta lets you chat with top AI models like ChatGPT, Gemini Pro, Claude, Perplexity, Deepseek, and Grok in one place. Compare model responses side-by-side in real-time and choose the best AI for every task",
-  keywords:
-    "Open Fiesta, AI chat, multiple AI models, OpenAI, ChatGPT, Gemini Pro, Anthropic, Claude, Perplexity, Deepseek, Grok, AI comparison, AI subscription, AI assistants, AI Fiesta, language models, Compare LLMs",
+  title: siteConfig.name,
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
 };
 
 export default function RootLayout({
