@@ -49,7 +49,7 @@ export const Conversation = () => {
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
       <ChatContainerRoot className="flex-1">
-        <ChatContainerContent className="space-y-4 p-4">
+        <ChatContainerContent className="space-y-4 p-4 max-w-[800px] mx-auto w-full">
           {messages.map((message) => {
             const isAssistant = message.role === "assistant";
 
