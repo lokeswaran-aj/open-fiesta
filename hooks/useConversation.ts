@@ -13,7 +13,7 @@ export const useConversation = (modelId: string) => {
     (state) => state.removeStreamedModelId,
   );
 
-  const { messages, sendMessage, stop } = useChat({
+  const { messages, sendMessage, stop, status } = useChat({
     id: `${modelId}-conversation`,
     onFinish: () => {
       removeStreamedModelId(modelId);
@@ -55,5 +55,5 @@ export const useConversation = (modelId: string) => {
     }
   }, [shouldStop, setShouldStop, stop, removeStreamedModelId, modelId]);
 
-  return { messages };
+  return { messages, status };
 };

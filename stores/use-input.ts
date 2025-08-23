@@ -40,11 +40,11 @@ export const useInput = create<InputStore>()(
             ...state.streamingModelIds.slice(0, index),
             ...state.streamingModelIds.slice(index + 1),
           ];
-
-          return {
+          const newState: Partial<InputStore> = {
             streamingModelIds: updatedStreamingModelIds,
-            isLoading: updatedStreamingModelIds.length > 0,
           };
+          if (updatedStreamingModelIds.length === 0) newState.isLoading = false;
+          return newState;
         }),
       isLoading: false,
       setIsLoading: (isLoading: boolean) => set({ isLoading }),

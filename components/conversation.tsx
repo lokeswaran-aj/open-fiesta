@@ -16,7 +16,7 @@ type Props = {
 export const Conversation = (props: Props) => {
   const { model } = props;
 
-  const { messages } = useConversation(model.id);
+  const { messages, status } = useConversation(model.id);
 
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
@@ -25,11 +25,16 @@ export const Conversation = (props: Props) => {
       </div>
       <ChatContainerRoot className="flex-1">
         <ChatContainerContent className="space-y-4 p-4 max-w-[800px] mx-auto w-full">
-          {messages.map((message) => {
+          {messages.map((message, index) => {
             const isAssistant = message.role === "assistant";
-
+            const isLoading =
+              status === "streaming" && index === messages.length - 1;
             return isAssistant ? (
-              <AiMessage key={message.id} message={message} />
+              <AiMessage
+                key={message.id}
+                message={message}
+                isLoading={isLoading}
+              />
             ) : (
               <UserMessage key={message.id} message={message} />
             );
