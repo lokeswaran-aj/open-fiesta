@@ -5,6 +5,9 @@ type InputStore = {
   input: string;
   setInput: (input: string) => void;
   clearInput: () => void;
+  streamingModelIds: Set<string>;
+  setStreamingModelId: (modelId: string) => void;
+  removeStreamedModelId: (modelId: string) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   shouldSubmit: boolean;
@@ -19,6 +22,22 @@ export const useInput = create<InputStore>()(
       input: "",
       setInput: (input: string) => set({ input }),
       clearInput: () => set({ input: "" }),
+      streamingModelIds: new Set(),
+      setStreamingModelId: (modelId: string) =>
+        set((state) => ({
+          streamingModelIds: state.streamingModelIds.add(modelId),
+        })),
+      removeStreamedModelId: (modelId: string) =>
+        set((state) => {
+          const newStreamingModelIds = new Set(
+            [...state.streamingModelIds].filter((m) => m !== modelId),
+          );
+          console.log(newStreamingModelIds.size !== 0);
+          return {
+            streamingModelIds: newStreamingModelIds,
+            isLoading: newStreamingModelIds.size !== 0,
+          };
+        }),
       isLoading: false,
       setIsLoading: (isLoading: boolean) => set({ isLoading }),
       shouldSubmit: false,

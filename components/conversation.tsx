@@ -18,6 +18,10 @@ type Props = {
 export const Conversation = (props: Props) => {
   const { model } = props;
   const setIsLoading = useInput((state) => state.setIsLoading);
+  const setStreamingModelId = useInput((state) => state.setStreamingModelId);
+  const removeStreamedModelId = useInput(
+    (state) => state.removeStreamedModelId,
+  );
   const input = useInput((state) => state.input);
   const shouldSubmit = useInput((state) => state.shouldSubmit);
   const setShouldSubmit = useInput((state) => state.setShouldSubmit);
@@ -28,12 +32,16 @@ export const Conversation = (props: Props) => {
   const { messages, sendMessage, stop } = useChat({
     id: `${model.id}-conversation`,
     onFinish: () => {
-      setIsLoading(false);
+      removeStreamedModelId(model.id);
+    },
+    onError: () => {
+      removeStreamedModelId(model.id);
     },
   });
 
   useEffect(() => {
     if (shouldSubmit) {
+      setStreamingModelId(model.id);
       sendMessage(
         {
           text: input,
@@ -52,6 +60,7 @@ export const Conversation = (props: Props) => {
       stop();
       setShouldStop(false);
       setIsLoading(false);
+      removeStreamedModelId(model.id);
     }
   }, [
     sendMessage,
@@ -64,6 +73,8 @@ export const Conversation = (props: Props) => {
     setShouldStop,
     stop,
     model.id,
+    setStreamingModelId,
+    removeStreamedModelId,
   ]);
 
   return (
