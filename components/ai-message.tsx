@@ -1,5 +1,4 @@
 import type { UIMessage } from "@ai-sdk/react";
-import { Logo } from "@/components/logo";
 import { Markdown } from "@/components/prompt-kit/markdown";
 import { Message, MessageAvatar } from "@/components/prompt-kit/message";
 import {
@@ -7,6 +6,7 @@ import {
   ReasoningContent,
   ReasoningTrigger,
 } from "./prompt-kit/reasoning";
+import Icons from "./ui/icons";
 
 type Props = {
   message: UIMessage;
@@ -18,7 +18,7 @@ export const AiMessage = (props: Props) => {
   return (
     <Message className="justify-start">
       <div className="flex items-start mt-2.5 mr-[-10px]">
-        <MessageAvatar className="size-5" component={Logo} />
+        <MessageAvatar className="size-5" component={Icons.logo} />
       </div>
       <div className="max-w-[85%] flex-1 sm:max-w-[75%]">
         <div className="prose p-2">
