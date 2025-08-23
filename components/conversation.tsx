@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { Logo } from "@/components/logo";
 import {
   ChatContainerContent,
   ChatContainerRoot,
 } from "@/components/prompt-kit/chat-container";
 import { Markdown } from "@/components/prompt-kit/markdown";
-import { Message, MessageContent } from "@/components/prompt-kit/message";
+import {
+  Message,
+  MessageAvatar,
+  MessageContent,
+} from "@/components/prompt-kit/message";
 
 export const Conversation = () => {
   const [messages] = useState([
@@ -59,6 +64,11 @@ export const Conversation = () => {
                   message.role === "user" ? "justify-end" : "justify-start"
                 }
               >
+                {isAssistant && (
+                  <div className="flex items-start mt-2.5 mr-[-10px]">
+                    <MessageAvatar className="size-5" component={Logo} />
+                  </div>
+                )}
                 <div className="max-w-[85%] flex-1 sm:max-w-[75%]">
                   {isAssistant ? (
                     <div className="prose p-2">

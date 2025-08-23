@@ -24,11 +24,12 @@ const Message = ({ children, className, ...props }: MessageProps) => (
 );
 
 export type MessageAvatarProps = {
-  src: string;
-  alt: string;
+  src?: string;
+  alt?: string;
   fallback?: string;
   delayMs?: number;
   className?: string;
+  component?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 };
 
 const MessageAvatar = ({
@@ -37,11 +38,16 @@ const MessageAvatar = ({
   fallback,
   delayMs,
   className,
+  component: Component,
 }: MessageAvatarProps) => {
   return (
     <Avatar className={cn("h-8 w-8 shrink-0", className)}>
-      <AvatarImage src={src} alt={alt} />
-      {fallback && (
+      {Component ? (
+        <Component className="h-full w-full" />
+      ) : src ? (
+        <AvatarImage src={src} alt={alt} loading="eager" />
+      ) : null}
+      {fallback && !Component && (
         <AvatarFallback delayMs={delayMs}>{fallback}</AvatarFallback>
       )}
     </Avatar>
