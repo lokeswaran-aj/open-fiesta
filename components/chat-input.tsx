@@ -9,23 +9,17 @@ import {
   PromptInputTextarea,
 } from "@/components/prompt-kit/prompt-input";
 import { Button } from "@/components/ui/button";
+import { useInput } from "@/stores/use-input";
 
 export const ChatInput = () => {
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const input = useInput((state) => state.input);
+  const setInput = useInput((state) => state.setInput);
+  const setShouldSubmit = useInput((state) => state.setShouldSubmit);
+  const isLoading = useInput((state) => state.isLoading);
+  const setShouldStop = useInput((state) => state.setShouldStop);
+
   const [files, setFiles] = useState<File[]>([]);
   const uploadInputRef = useRef<HTMLInputElement>(null);
-
-  const handleSubmit = () => {
-    if (input.trim() || files.length > 0) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        setInput("");
-        setFiles([]);
-      }, 2000);
-    }
-  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -46,7 +40,7 @@ export const ChatInput = () => {
       value={input}
       onValueChange={setInput}
       isLoading={isLoading}
-      onSubmit={handleSubmit}
+      onSubmit={() => !isLoading && setShouldSubmit(true)}
       className="w-full max-w-(--breakpoint-md) bg-input"
     >
       {files.length > 0 && (
@@ -70,7 +64,7 @@ export const ChatInput = () => {
         </div>
       )}
 
-      <PromptInputTextarea placeholder="Ask me anything..." />
+      <PromptInputTextarea placeholder="Ask me anything..." autoFocus />
 
       <PromptInputActions className="flex items-center justify-between gap-2 pt-2">
         <PromptInputAction tooltip="Attach files">
@@ -93,19 +87,26 @@ export const ChatInput = () => {
         <PromptInputAction
           tooltip={isLoading ? "Stop generation" : "Send message"}
         >
-          <Button
-            variant="default"
-            size="icon"
-            className="h-8 w-8 rounded-full"
-            disabled={!input.trim()}
-            onClick={handleSubmit}
-          >
-            {isLoading ? (
-              <Square className="size-5 fill-current" />
-            ) : (
+          {isLoading ? (
+            <Button
+              variant="default"
+              size="icon"
+              className="h-8 w-8 rounded-full"
+              onClick={() => setShouldStop(true)}
+            >
+              <Square className="size-4 fill-current" />
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              size="icon"
+              className="h-8 w-8 rounded-full"
+              disabled={!input.trim()}
+              onClick={() => setShouldSubmit(true)}
+            >
               <ArrowUp className="size-5" />
-            )}
-          </Button>
+            </Button>
+          )}
         </PromptInputAction>
       </PromptInputActions>
     </PromptInput>

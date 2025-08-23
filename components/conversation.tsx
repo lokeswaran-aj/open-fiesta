@@ -1,53 +1,76 @@
 "use client";
 
-import { useState } from "react";
+import { useChat } from "@ai-sdk/react";
+import { useEffect } from "react";
 import { AiMessage } from "@/components/ai-message";
 import {
   ChatContainerContent,
   ChatContainerRoot,
 } from "@/components/prompt-kit/chat-container";
 import { UserMessage } from "@/components/user-message";
-import type { ChatMessage } from "@/lib/types";
+import type { AI_MODELS } from "@/lib/models";
+import { useInput } from "@/stores/use-input";
 
-export const Conversation = () => {
-  const [messages] = useState<ChatMessage[]>([
-    {
-      id: 1,
-      role: "user",
-      content: "Hello! Can you help me with a coding question?",
+type Props = {
+  model: (typeof AI_MODELS)[number];
+};
+
+export const Conversation = (props: Props) => {
+  const { model } = props;
+  const setIsLoading = useInput((state) => state.setIsLoading);
+  const input = useInput((state) => state.input);
+  const shouldSubmit = useInput((state) => state.shouldSubmit);
+  const setShouldSubmit = useInput((state) => state.setShouldSubmit);
+  const clearInput = useInput((state) => state.clearInput);
+  const shouldStop = useInput((state) => state.shouldStop);
+  const setShouldStop = useInput((state) => state.setShouldStop);
+
+  const { messages, sendMessage, stop } = useChat({
+    id: `${model.id}-conversation`,
+    onFinish: () => {
+      setIsLoading(false);
     },
-    {
-      id: 2,
-      role: "assistant",
-      content:
-        "Of course! I'd be happy to help with your coding question. What would you like to know?",
-    },
-    {
-      id: 3,
-      role: "user",
-      content: "How do I create a responsive layout with CSS Grid?",
-    },
-    {
-      id: 4,
-      role: "assistant",
-      content:
-        "Creating a responsive layout with CSS Grid is straightforward. Here's a basic example:\n\n```css\n.container {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 1rem;\n}\n```\n\nThis creates a grid where:\n- Columns automatically fit as many as possible\n- Each column is at least 250px wide\n- Columns expand to fill available space\n- There's a 1rem gap between items\n\nWould you like me to explain more about how this works?",
-    },
-    {
-      id: 5,
-      role: "user",
-      content: "How do I create a responsive layout with CSS Grid?",
-    },
-    {
-      id: 6,
-      role: "assistant",
-      content:
-        "Creating a responsive layout with CSS Grid is straightforward. Here's a basic example:\n\n```css\n.container {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 1rem;\n}\n```\n\nThis creates a grid where:\n- Columns automatically fit as many as possible\n- Each column is at least 250px wide\n- Columns expand to fill available space\n- There's a 1rem gap between items\n\nWould you like me to explain more about how this works?",
-    },
+  });
+
+  useEffect(() => {
+    if (shouldSubmit) {
+      sendMessage(
+        {
+          text: input,
+        },
+        {
+          body: {
+            model: model.id,
+          },
+        },
+      );
+      clearInput();
+      setIsLoading(true);
+      setShouldSubmit(false);
+    }
+    if (shouldStop) {
+      stop();
+      setShouldStop(false);
+      setIsLoading(false);
+    }
+  }, [
+    sendMessage,
+    input,
+    shouldSubmit,
+    setShouldSubmit,
+    clearInput,
+    setIsLoading,
+    shouldStop,
+    setShouldStop,
+    stop,
+    model.id,
   ]);
 
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
+      <div className="p-3 border-b">
+        <h3 className="font-medium text-sm">{model.name}</h3>
+      </div>
       <ChatContainerRoot className="flex-1">
         <ChatContainerContent className="space-y-4 p-4 max-w-[800px] mx-auto w-full">
           {messages.map((message) => {

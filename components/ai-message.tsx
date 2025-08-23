@@ -1,10 +1,10 @@
+import type { UIMessage } from "@ai-sdk/react";
 import { Logo } from "@/components/logo";
 import { Markdown } from "@/components/prompt-kit/markdown";
 import { Message, MessageAvatar } from "@/components/prompt-kit/message";
-import type { ChatMessage } from "@/lib/types";
 
 type Props = {
-  message: ChatMessage;
+  message: UIMessage;
 };
 
 export const AiMessage = ({ message }: Props) => {
@@ -15,7 +15,22 @@ export const AiMessage = ({ message }: Props) => {
       </div>
       <div className="max-w-[85%] flex-1 sm:max-w-[75%]">
         <div className="prose p-2">
-          <Markdown>{message.content}</Markdown>
+          {message.parts.map((part) => {
+            if (part.type === "text") {
+              return (
+                <Markdown key={`${message.id}-${part.text}`}>
+                  {part.text}
+                </Markdown>
+              );
+            } else if (part.type === "reasoning") {
+              return (
+                <p key={`${message.id}-${part.text}`}>
+                  <strong>Reasoning:</strong> {part.text}
+                </p>
+              );
+            }
+            return null;
+          })}
         </div>
       </div>
     </Message>
