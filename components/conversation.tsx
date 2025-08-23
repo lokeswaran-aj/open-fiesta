@@ -1,20 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Logo } from "@/components/logo";
+import { AiMessage } from "@/components/ai-message";
 import {
   ChatContainerContent,
   ChatContainerRoot,
 } from "@/components/prompt-kit/chat-container";
-import { Markdown } from "@/components/prompt-kit/markdown";
-import {
-  Message,
-  MessageAvatar,
-  MessageContent,
-} from "@/components/prompt-kit/message";
+import { UserMessage } from "@/components/user-message";
+import type { ChatMessage } from "@/lib/types";
 
 export const Conversation = () => {
-  const [messages] = useState([
+  const [messages] = useState<ChatMessage[]>([
     {
       id: 1,
       role: "user",
@@ -57,30 +53,10 @@ export const Conversation = () => {
           {messages.map((message) => {
             const isAssistant = message.role === "assistant";
 
-            return (
-              <Message
-                key={message.id}
-                className={
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }
-              >
-                {isAssistant && (
-                  <div className="flex items-start mt-2.5 mr-[-10px]">
-                    <MessageAvatar className="size-5" component={Logo} />
-                  </div>
-                )}
-                <div className="max-w-[85%] flex-1 sm:max-w-[75%]">
-                  {isAssistant ? (
-                    <div className="prose p-2">
-                      <Markdown>{message.content}</Markdown>
-                    </div>
-                  ) : (
-                    <MessageContent className="bg-primary text-primary-foreground rounded-2xl px-4 py-2 min-w-fit max-w-[85%] sm:max-w-[75%] justify-self-end">
-                      {message.content}
-                    </MessageContent>
-                  )}
-                </div>
-              </Message>
+            return isAssistant ? (
+              <AiMessage key={message.id} message={message} />
+            ) : (
+              <UserMessage key={message.id} message={message} />
             );
           })}
         </ChatContainerContent>
