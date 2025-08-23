@@ -4,8 +4,7 @@ import { persist } from "zustand/middleware";
 type InputStore = {
   input: string;
   setInput: (input: string) => void;
-  clearInput: () => void;
-  streamingModelIds: Set<string>;
+  streamingModelIds: string[];
   setStreamingModelId: (modelId: string) => void;
   removeStreamedModelId: (modelId: string) => void;
   isLoading: boolean;
@@ -21,21 +20,30 @@ export const useInput = create<InputStore>()(
     (set) => ({
       input: "",
       setInput: (input: string) => set({ input }),
-      clearInput: () => set({ input: "" }),
-      streamingModelIds: new Set(),
+      streamingModelIds: [],
       setStreamingModelId: (modelId: string) =>
-        set((state) => ({
-          streamingModelIds: state.streamingModelIds.add(modelId),
-        })),
+        set((state) => {
+          const newState: Partial<InputStore> = {
+            streamingModelIds: [...state.streamingModelIds, modelId],
+          };
+          if (!state.isLoading) newState.isLoading = true;
+          if (state.input.length > 0) newState.input = "";
+
+          return newState;
+        }),
       removeStreamedModelId: (modelId: string) =>
         set((state) => {
-          const newStreamingModelIds = new Set(
-            [...state.streamingModelIds].filter((m) => m !== modelId),
-          );
-          console.log(newStreamingModelIds.size !== 0);
+          const index = state.streamingModelIds.indexOf(modelId);
+          if (index === -1) return state;
+
+          const updatedStreamingModelIds = [
+            ...state.streamingModelIds.slice(0, index),
+            ...state.streamingModelIds.slice(index + 1),
+          ];
+
           return {
-            streamingModelIds: newStreamingModelIds,
-            isLoading: newStreamingModelIds.size !== 0,
+            streamingModelIds: updatedStreamingModelIds,
+            isLoading: updatedStreamingModelIds.length > 0,
           };
         }),
       isLoading: false,

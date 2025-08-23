@@ -17,7 +17,6 @@ type Props = {
 
 export const Conversation = (props: Props) => {
   const { model } = props;
-  const setIsLoading = useInput((state) => state.setIsLoading);
   const setStreamingModelId = useInput((state) => state.setStreamingModelId);
   const removeStreamedModelId = useInput(
     (state) => state.removeStreamedModelId,
@@ -25,7 +24,6 @@ export const Conversation = (props: Props) => {
   const input = useInput((state) => state.input);
   const shouldSubmit = useInput((state) => state.shouldSubmit);
   const setShouldSubmit = useInput((state) => state.setShouldSubmit);
-  const clearInput = useInput((state) => state.clearInput);
   const shouldStop = useInput((state) => state.shouldStop);
   const setShouldStop = useInput((state) => state.setShouldStop);
 
@@ -52,14 +50,11 @@ export const Conversation = (props: Props) => {
           },
         },
       );
-      clearInput();
-      setIsLoading(true);
       setShouldSubmit(false);
     }
     if (shouldStop) {
       stop();
       setShouldStop(false);
-      setIsLoading(false);
       removeStreamedModelId(model.id);
     }
   }, [
@@ -67,8 +62,6 @@ export const Conversation = (props: Props) => {
     input,
     shouldSubmit,
     setShouldSubmit,
-    clearInput,
-    setIsLoading,
     shouldStop,
     setShouldStop,
     stop,
