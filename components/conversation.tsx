@@ -1,15 +1,13 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
-import { useEffect } from "react";
 import { AiMessage } from "@/components/ai-message";
 import {
   ChatContainerContent,
   ChatContainerRoot,
 } from "@/components/prompt-kit/chat-container";
 import { UserMessage } from "@/components/user-message";
+import { useConversation } from "@/hooks/useConversation";
 import type { AI_MODELS } from "@/lib/models";
-import { useInput } from "@/stores/use-input";
 
 type Props = {
   model: (typeof AI_MODELS)[number];
@@ -17,57 +15,8 @@ type Props = {
 
 export const Conversation = (props: Props) => {
   const { model } = props;
-  const setStreamingModelId = useInput((state) => state.setStreamingModelId);
-  const removeStreamedModelId = useInput(
-    (state) => state.removeStreamedModelId,
-  );
-  const input = useInput((state) => state.input);
-  const shouldSubmit = useInput((state) => state.shouldSubmit);
-  const setShouldSubmit = useInput((state) => state.setShouldSubmit);
-  const shouldStop = useInput((state) => state.shouldStop);
-  const setShouldStop = useInput((state) => state.setShouldStop);
 
-  const { messages, sendMessage, stop } = useChat({
-    id: `${model.id}-conversation`,
-    onFinish: () => {
-      removeStreamedModelId(model.id);
-    },
-    onError: () => {
-      removeStreamedModelId(model.id);
-    },
-  });
-
-  useEffect(() => {
-    if (shouldSubmit) {
-      setStreamingModelId(model.id);
-      sendMessage(
-        {
-          text: input,
-        },
-        {
-          body: {
-            model: model.id,
-          },
-        },
-      );
-      setShouldSubmit(false);
-    }
-  }, [
-    input,
-    shouldSubmit,
-    model.id,
-    sendMessage,
-    setShouldSubmit,
-    setStreamingModelId,
-  ]);
-
-  useEffect(() => {
-    if (shouldStop) {
-      stop();
-      setShouldStop(false);
-      removeStreamedModelId(model.id);
-    }
-  }, [shouldStop, setShouldStop, stop, removeStreamedModelId, model.id]);
+  const { messages } = useConversation(model.id);
 
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
