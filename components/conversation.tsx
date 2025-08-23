@@ -52,23 +52,22 @@ export const Conversation = (props: Props) => {
       );
       setShouldSubmit(false);
     }
+  }, [
+    input,
+    shouldSubmit,
+    model.id,
+    sendMessage,
+    setShouldSubmit,
+    setStreamingModelId,
+  ]);
+
+  useEffect(() => {
     if (shouldStop) {
       stop();
       setShouldStop(false);
       removeStreamedModelId(model.id);
     }
-  }, [
-    sendMessage,
-    input,
-    shouldSubmit,
-    setShouldSubmit,
-    shouldStop,
-    setShouldStop,
-    stop,
-    model.id,
-    setStreamingModelId,
-    removeStreamedModelId,
-  ]);
+  }, [shouldStop, setShouldStop, stop, removeStreamedModelId, model.id]);
 
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
