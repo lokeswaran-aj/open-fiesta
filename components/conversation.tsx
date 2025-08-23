@@ -8,6 +8,7 @@ import {
 import { UserMessage } from "@/components/user-message";
 import { useConversation } from "@/hooks/useConversation";
 import type { AI_MODELS } from "@/lib/models";
+import { Loading } from "./loading";
 
 type Props = {
   model: (typeof AI_MODELS)[number];
@@ -27,18 +28,20 @@ export const Conversation = (props: Props) => {
         <ChatContainerContent className="space-y-4 p-4 max-w-[800px] mx-auto w-full">
           {messages.map((message, index) => {
             const isAssistant = message.role === "assistant";
-            const isLoading =
-              status === "streaming" && index === messages.length - 1;
+
             return isAssistant ? (
               <AiMessage
                 key={message.id}
                 message={message}
-                isLoading={isLoading}
+                isStreaming={
+                  status === "streaming" && index === messages.length - 1
+                }
               />
             ) : (
               <UserMessage key={message.id} message={message} />
             );
           })}
+          {status === "submitted" && <Loading />}
         </ChatContainerContent>
       </ChatContainerRoot>
     </div>

@@ -10,12 +10,11 @@ import {
 
 type Props = {
   message: UIMessage;
-  isLoading: boolean;
+  isStreaming: boolean;
 };
 
 export const AiMessage = (props: Props) => {
-  const { message, isLoading } = props;
-
+  const { message, isStreaming } = props;
   return (
     <Message className="justify-start">
       <div className="flex items-start mt-2.5 mr-[-10px]">
@@ -33,10 +32,10 @@ export const AiMessage = (props: Props) => {
             } else if (part.type === "reasoning") {
               return (
                 <Reasoning
-                  isStreaming={isLoading}
+                  isStreaming={isStreaming}
                   key={`${message.id}-reasoning-${index}`}
                 >
-                  {isLoading ? (
+                  {isStreaming ? (
                     <ReasoningTrigger>Thinking</ReasoningTrigger>
                   ) : (
                     <ReasoningTrigger>Thoughts</ReasoningTrigger>
