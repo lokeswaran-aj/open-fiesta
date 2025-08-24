@@ -10,6 +10,24 @@ export function sortModelsByProvider(
   });
 }
 
+export const ProvidersOrder = [
+  "Openai",
+  "Anthropic",
+  "Google",
+  "Deepseek",
+  "Xai",
+  "Meta",
+  "Moonshotai",
+  "Perplexity",
+  "Alibaba",
+  "Amazon",
+  "Cohere",
+  "Mistral",
+  "Vercel",
+  "Zai",
+  "Inception",
+  "Morph",
+];
 export const models: GatewayLanguageModelEntry[] = [
   {
     id: "openai/gpt-4o-mini",
