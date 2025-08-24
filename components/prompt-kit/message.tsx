@@ -29,7 +29,7 @@ export type MessageAvatarProps = {
   fallback?: string;
   delayMs?: number;
   className?: string;
-  component?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  component?: React.ReactNode;
 };
 
 const MessageAvatar = ({
@@ -43,7 +43,7 @@ const MessageAvatar = ({
   return (
     <Avatar className={cn("h-8 w-8 shrink-0", className)}>
       {Component ? (
-        <Component className="h-full w-full" />
+        Component
       ) : src ? (
         <AvatarImage src={src} alt={alt} loading="eager" />
       ) : null}

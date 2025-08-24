@@ -33,4 +33,4 @@ const ProviderLogos = {
   zai: (size: number) => <ZAI size={size} />,
 };
 
-export default ProviderLogos;
+export { ProviderLogos };
