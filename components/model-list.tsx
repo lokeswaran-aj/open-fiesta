@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useModels } from "@/stores/use-models";
+import { MessageAvatar } from "./prompt-kit/message";
 import ProviderLogos from "./ui/provider-logos";
 
 export const ModelList = () => {
@@ -26,10 +27,6 @@ export const ModelList = () => {
     return `$${pricePerMillion} / million tokens`;
   };
 
-  const providers = models.map((model) => model.id.split("/")[0]);
-  const uniqueProviders = [...new Set(providers)];
-  console.log("🚀 ~ ModelList ~ uniqueProviders:", uniqueProviders);
-
   return (
     <div className="h-full overflow-y-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-1">
@@ -46,7 +43,13 @@ export const ModelList = () => {
                       "/",
                     )[0] as keyof typeof ProviderLogos;
                     const Logo = ProviderLogos[providerKey];
-                    return Logo ? Logo(16) : null;
+                    return Logo ? (
+                      Logo(16)
+                    ) : (
+                      <MessageAvatar
+                        fallback={providerKey.charAt(0).toUpperCase()}
+                      />
+                    );
                   })()}
                 </div>
                 <div className="space-x-1 truncate">
