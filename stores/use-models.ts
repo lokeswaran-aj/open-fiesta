@@ -9,6 +9,7 @@ type ModelStore = {
   selectedModels: GatewayLanguageModelEntry[];
   addSelectedModel: (model: GatewayLanguageModelEntry) => void;
   removeSelectedModel: (model: GatewayLanguageModelEntry) => void;
+  reorderSelectedModels: (fromIndex: number, toIndex: number) => void;
 };
 
 export const useModels = create<ModelStore>()(
@@ -23,6 +24,13 @@ export const useModels = create<ModelStore>()(
         set((state) => ({
           selectedModels: state.selectedModels.filter((m) => m.id !== model.id),
         })),
+      reorderSelectedModels: (fromIndex: number, toIndex: number) =>
+        set((state) => {
+          const newSelectedModels = [...state.selectedModels];
+          const [reorderedItem] = newSelectedModels.splice(fromIndex, 1);
+          newSelectedModels.splice(toIndex, 0, reorderedItem);
+          return { selectedModels: newSelectedModels };
+        }),
     }),
     {
       name: "models",
