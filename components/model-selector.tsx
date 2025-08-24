@@ -8,6 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ModelList } from "./model-list";
+import { SelectedModel } from "./selected-model";
 import Icons from "./ui/icons";
 
 export const ModelSelector = () => {
@@ -19,13 +20,14 @@ export const ModelSelector = () => {
           Manage Models
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-6xl h-[90dvh] overflow-y-auto">
+      <DialogContent className="sm:max-w-6xl h-[90dvh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Select Model</DialogTitle>
           <DialogDescription>
             Select the model you want to use for your conversation.
           </DialogDescription>
         </DialogHeader>
+        <SelectedModel />
         <ModelList />
       </DialogContent>
     </Dialog>
