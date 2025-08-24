@@ -1,6 +1,12 @@
 import type { UIMessage } from "@ai-sdk/react";
+import { Fragment } from "react";
 import { Markdown } from "@/components/prompt-kit/markdown";
-import { Message, MessageAvatar } from "@/components/prompt-kit/message";
+import {
+  Message,
+  MessageActions,
+  MessageAvatar,
+} from "@/components/prompt-kit/message";
+import { CopyAction } from "./copy-action";
 import { ModelLogo } from "./model-selection/model-logo";
 import {
   Reasoning,
@@ -16,6 +22,7 @@ type Props = {
 
 export const AiMessage = (props: Props) => {
   const { message, isStreaming, modelId } = props;
+
   return (
     <Message className="justify-start">
       <div className="flex items-start mt-2.5 mr-[-10px]">
@@ -29,9 +36,20 @@ export const AiMessage = (props: Props) => {
           {message.parts.map((part, index) => {
             if (part.type === "text") {
               return (
-                <Markdown key={`${message.id}-text-${index}`}>
-                  {part.text}
-                </Markdown>
+                <Fragment key={`${message.id}-text-${index}`}>
+                  <Markdown>{part.text}</Markdown>
+                  <MessageActions className="flex gap-2">
+                    {message.parts.filter((part) => part.type === "text")
+                      .length > 0 && (
+                      <CopyAction
+                        text={message.parts
+                          .filter((part) => part.type === "text")
+                          .map((part) => part.text)
+                          .join("\n")}
+                      />
+                    )}
+                  </MessageActions>
+                </Fragment>
               );
             } else if (part.type === "reasoning" && part.text) {
               return (
