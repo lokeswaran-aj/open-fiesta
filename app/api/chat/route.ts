@@ -1,5 +1,6 @@
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { initializeOTEL } from "langsmith/experimental/otel/setup";
+import { getProviderOptions } from "./providerOptions";
 
 export const maxDuration = 60;
 initializeOTEL();
@@ -13,6 +14,11 @@ export async function POST(req: Request) {
     messages: convertToModelMessages(messages),
     system:
       "You are a friendly assistant! Keep your responses concise and helpful.",
+    providerOptions: getProviderOptions(model),
+    onError: (error) => {
+      console.dir(error, { depth: null });
+    },
+
     experimental_telemetry: {
       isEnabled: true,
       metadata: {
