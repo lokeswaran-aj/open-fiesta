@@ -1,10 +1,14 @@
 import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { useEffect, useRef, useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { siteConfig } from "@/lib/config";
 import { useModels } from "@/stores/use-models";
 import { ActionButton } from "./action-button";
 import { ModelLogo } from "./model-logo";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 type Props = {
   model: GatewayLanguageModelEntry;

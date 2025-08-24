@@ -1,6 +1,10 @@
 import { PlusIcon, X } from "lucide-react";
-import { Button } from "./ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type ActionButtonProps = {
   type: "add" | "remove";

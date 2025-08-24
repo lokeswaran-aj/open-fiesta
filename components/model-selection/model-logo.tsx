@@ -1,5 +1,5 @@
-import { MessageAvatar } from "./prompt-kit/message";
-import ProviderLogos from "./ui/provider-logos";
+import { MessageAvatar } from "@/components/prompt-kit/message";
+import ProviderLogos from "@/components/ui/provider-logos";
 
 type Props = {
   modelId: string;

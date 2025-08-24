@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useModels } from "@/stores/use-models";
 import { ModelCard } from "./model-card";
 
-export const ModelList = () => {
+export const AvailableModelsList = () => {
   const { models, setModels } = useModels((state) => state);
 
   useEffect(() => {

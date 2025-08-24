@@ -1,5 +1,5 @@
 import { GitHubLink } from "./github-link";
-import { ModelSelector } from "./model-selector";
+import { ModelSelector } from "./model-selection/model-selector";
 import { ThemeSwitcher } from "./theme-switcher";
 
 export const Header = () => {

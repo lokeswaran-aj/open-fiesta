@@ -1,3 +1,4 @@
+import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,28 +9,28 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { siteConfig } from "@/lib/config";
-import { ModelList } from "./model-list";
+import { AvailableModelsList } from "./available-model-lists";
 import { SelectedModel } from "./selected-model";
-import Icons from "./ui/icons";
 
 export const ModelSelector = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          <Icons.sparkles className="size-5" />
+          <Settings className="size-4" />
           Manage Models
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-6xl h-[90dvh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>Select Model</DialogTitle>
+          <DialogTitle>Select Models</DialogTitle>
           <DialogDescription>
-            Select 1 to {siteConfig.maxModels} models for your conversation.
+            Select between 1 to {siteConfig.maxModels} models for your
+            conversation.
           </DialogDescription>
         </DialogHeader>
         <SelectedModel />
-        <ModelList />
+        <AvailableModelsList />
       </DialogContent>
     </Dialog>
   );
