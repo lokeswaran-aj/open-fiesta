@@ -1,13 +1,25 @@
 "use client";
-import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { ProvidersOrder } from "@/lib/models";
+import { useModelSearch } from "@/hooks/useModelSearch";
 import { useModels } from "@/stores/use-models";
-import { ModelCard } from "./model-card";
+import { EmptyState } from "./empty-state";
+import { ProviderSection } from "./provider-section";
+import { SearchInput } from "./search-input";
+import { SearchResultsInfo } from "./search-results-info";
 
 export const AvailableModelsList = () => {
   const { models, setModels } = useModels((state) => state);
+
+  const {
+    searchQuery,
+    setSearchQuery,
+    handleClearSearch,
+    sortedProviders,
+    totalResults,
+    hasResults,
+    isSearching,
+  } = useModelSearch(models);
 
   useEffect(() => {
     const fetchModels = async () => {
@@ -22,59 +34,42 @@ export const AvailableModelsList = () => {
     fetchModels();
   }, [setModels]);
 
-  // Group models by provider
-  const groupedModels = models.reduce(
-    (acc, model) => {
-      const provider = model.id.split("/")[0];
-      const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);
-      if (!acc[providerName]) {
-        acc[providerName] = [];
-      }
-      acc[providerName].push(model);
-      return acc;
-    },
-    {} as Record<string, GatewayLanguageModelEntry[]>,
-  );
-
-  // Sort providers by their position in the ProvidersOrder array
-  const sortProviders = (
-    [providerA]: [string, GatewayLanguageModelEntry[]],
-    [providerB]: [string, GatewayLanguageModelEntry[]],
-  ) => {
-    const indexA = ProvidersOrder.indexOf(providerA);
-    const indexB = ProvidersOrder.indexOf(providerB);
-    if (indexA !== -1 && indexB !== -1) {
-      return indexA - indexB;
-    }
-    if (indexA !== -1 && indexB === -1) {
-      return -1;
-    }
-    if (indexA === -1 && indexB !== -1) {
-      return 1;
-    }
-    return providerA.localeCompare(providerB);
-  };
-
   return (
-    <>
-      <h2 className="text-lg font-semibold">Available Models</h2>
-      <div className="flex-1 overflow-y-auto">
-        <div className="space-y-6">
-          {Object.entries(groupedModels)
-            .sort(sortProviders)
-            .map(([provider, models]) => (
-              <div key={provider} className="space-y-3">
-                <h3 className="text-md font-semibold">{provider}</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {models.map((model) => (
-                    <ModelCard key={model.id} model={model} />
-                  ))}
-                </div>
-                <hr />
-              </div>
-            ))}
-        </div>
+    <div className="flex flex-col flex-1 min-h-0">
+      {/* Header Section - Fixed */}
+      <div className="flex-shrink-0 space-y-4 pb-4">
+        <h2 className="text-lg font-semibold">Available Models</h2>
+
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          onClear={handleClearSearch}
+          placeholder="Search models by name or provider..."
+        />
+
+        <SearchResultsInfo
+          searchQuery={searchQuery}
+          totalResults={totalResults}
+          hasResults={hasResults}
+        />
       </div>
-    </>
+
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto min-h-0">
+        {hasResults ? (
+          <div className="space-y-6 pr-2">
+            {sortedProviders.map(([providerName, models]) => (
+              <ProviderSection
+                key={providerName}
+                providerName={providerName}
+                models={models}
+              />
+            ))}
+          </div>
+        ) : isSearching ? (
+          <EmptyState onClearSearch={handleClearSearch} />
+        ) : null}
+      </div>
+    </div>
   );
 };
