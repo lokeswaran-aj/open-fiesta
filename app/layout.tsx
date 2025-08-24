@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/lib/config";
 
 const geistSans = Geist({
@@ -40,6 +41,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <Toaster />
         {process.env.NODE_ENV === "production" && (
           <>
             <Analytics />
