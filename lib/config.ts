@@ -9,4 +9,5 @@ export const siteConfig = {
     github: "https://github.com/lokeswaran-aj/open-fiesta",
     githubApi: "https://api.github.com/repos/lokeswaran-aj/open-fiesta",
   },
+  maxModels: 10,
 };

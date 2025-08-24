@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { siteConfig } from "@/lib/config";
 import { ModelList } from "./model-list";
 import { SelectedModel } from "./selected-model";
 import Icons from "./ui/icons";
@@ -24,7 +25,7 @@ export const ModelSelector = () => {
         <DialogHeader>
           <DialogTitle>Select Model</DialogTitle>
           <DialogDescription>
-            Select the model you want to use for your conversation.
+            Select 1 to {siteConfig.maxModels} models for your conversation.
           </DialogDescription>
         </DialogHeader>
         <SelectedModel />

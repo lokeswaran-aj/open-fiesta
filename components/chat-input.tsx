@@ -10,6 +10,7 @@ import {
 } from "@/components/prompt-kit/prompt-input";
 import { Button } from "@/components/ui/button";
 import { useInput } from "@/stores/use-input";
+import { useModels } from "@/stores/use-models";
 
 export const ChatInput = () => {
   const input = useInput((state) => state.input);
@@ -17,6 +18,7 @@ export const ChatInput = () => {
   const setShouldSubmit = useInput((state) => state.setShouldSubmit);
   const isLoading = useInput((state) => state.isLoading);
   const setShouldStop = useInput((state) => state.setShouldStop);
+  const selectedModels = useModels((state) => state.selectedModels);
 
   const [files, setFiles] = useState<File[]>([]);
   const uploadInputRef = useRef<HTMLInputElement>(null);
@@ -35,12 +37,14 @@ export const ChatInput = () => {
     }
   };
 
+  const isModelSelected = selectedModels.length > 0;
+
   return (
     <PromptInput
       value={input}
       onValueChange={setInput}
       isLoading={isLoading}
-      onSubmit={() => !isLoading && setShouldSubmit(true)}
+      onSubmit={() => !isLoading && isModelSelected && setShouldSubmit(true)}
       className="w-full max-w-(--breakpoint-md) bg-input"
     >
       {files.length > 0 && (
@@ -101,7 +105,7 @@ export const ChatInput = () => {
               variant="default"
               size="icon"
               className="h-8 w-8 rounded-full"
-              disabled={!input.trim()}
+              disabled={!input.trim() || !isModelSelected}
               onClick={() => setShouldSubmit(true)}
             >
               <ArrowUp className="size-5" />

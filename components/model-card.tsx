@@ -1,9 +1,9 @@
 import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
-import { PlusIcon, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { siteConfig } from "@/lib/config";
 import { useModels } from "@/stores/use-models";
+import { ActionButton } from "./action-button";
 import { ModelLogo } from "./model-logo";
-import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 type Props = {
@@ -81,49 +81,15 @@ export const ModelCard = ({ model }: Props) => {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          {isSelected ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="w-6 h-6 rounded-full p-0 flex items-center justify-center border-none"
-                  onClick={handleRemoveModel}
-                  style={{
-                    backgroundColor: "#dc2626",
-                    color: "white",
-                    border: "none",
-                  }}
-                >
-                  <XIcon className="size-3" strokeWidth={3.5} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Remove Model</p>
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="w-6 h-6 rounded-full p-0 flex items-center justify-center border-none"
-                  onClick={handleAddModel}
-                  style={{
-                    backgroundColor: "#16a34a",
-                    color: "white",
-                    border: "none",
-                  }}
-                >
-                  <PlusIcon className="size-3" strokeWidth={3.5} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Add Model</p>
-              </TooltipContent>
-            </Tooltip>
-          )}
+          <ActionButton
+            type={isSelected ? "remove" : "add"}
+            size="md"
+            onClick={isSelected ? handleRemoveModel : handleAddModel}
+            disabled={
+              !isSelected && selectedModels.length >= siteConfig.maxModels
+            }
+            tooltipText={isSelected ? "Remove Model" : "Add Model"}
+          />
         </div>
       </div>
       <div className="px-4 py-3 text-xs bg-card rounded-b-lg">
