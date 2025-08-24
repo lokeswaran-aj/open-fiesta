@@ -18,7 +18,8 @@ export const useConversation = (modelId: string) => {
     onFinish: () => {
       removeStreamedModelId(modelId);
     },
-    onError: () => {
+    onError: (error) => {
+      console.dir(error, { depth: null });
       removeStreamedModelId(modelId);
     },
   });
