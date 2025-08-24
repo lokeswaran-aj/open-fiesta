@@ -30,6 +30,7 @@ export const ModelSelector = () => {
           </DialogDescription>
         </DialogHeader>
         <SelectedModel />
+        <hr />
         <AvailableModelsList />
       </DialogContent>
     </Dialog>
