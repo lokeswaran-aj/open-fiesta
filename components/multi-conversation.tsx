@@ -6,11 +6,11 @@ export const MultiConversation = () => {
   const selectedModels = useModels((state) => state.selectedModels);
 
   return (
-    <div className="flex h-full overflow-x-auto">
+    <div className="flex h-full overflow-x-auto border-b border-gray-300 dark:border-gray-700">
       {selectedModels.map((model) => (
         <div
           key={model.id}
-          className="flex-shrink-0 border-r border-b border-gray-300 dark:border-gray-700 last:border-r-0 w-[400px] min-w-[400px] max-sm:w-full max-sm:min-w-full"
+          className="flex-shrink-0 border-r border-gray-300 dark:border-gray-700 w-[400px] min-w-[400px] max-sm:w-full max-sm:min-w-full"
         >
           <Conversation model={model} />
         </div>

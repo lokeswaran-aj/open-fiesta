@@ -21,7 +21,7 @@ export const Conversation = (props: Props) => {
 
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
-      <div className="p-3 border-b">
+      <div className="p-3 border-b border-gray-300 dark:border-gray-700">
         <h3 className="font-medium text-sm">{model.name}</h3>
       </div>
       <ChatContainerRoot className="flex-1">
