@@ -1,5 +1,4 @@
 import { ChatInput } from "@/components/chat-input";
-import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { MultiConversation } from "@/components/multi-conversation";
 
@@ -13,7 +12,6 @@ export default function Home() {
         </div>
         <div className="flex-shrink-0 flex flex-col items-center gap-2 p-4">
           <ChatInput />
-          <Footer />
         </div>
       </main>
     </div>
