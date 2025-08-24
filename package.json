@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-sdk/gateway": "^1.0.11",
     "@ai-sdk/react": "^2.0.22",
+    "@lobehub/icons": "^2.29.1",
     "@opentelemetry/context-async-hooks": "^2.0.1",
     "@opentelemetry/exporter-trace-otlp-proto": "^0.203.0",
     "@opentelemetry/sdk-trace-base": "^2.0.1",
