@@ -1,5 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { useEffect } from "react";
+import { authClient } from "@/lib/auth-client";
 import { useInput } from "@/stores/use-input";
 
 export const useConversation = (modelId: string) => {
@@ -12,6 +13,7 @@ export const useConversation = (modelId: string) => {
   const removeStreamedModelId = useInput(
     (state) => state.removeStreamedModelId,
   );
+  const { data } = authClient.useSession();
 
   const { messages, sendMessage, stop, status, error } = useChat({
     id: `${modelId}-conversation`,
@@ -34,6 +36,7 @@ export const useConversation = (modelId: string) => {
         {
           body: {
             model: modelId,
+            userId: data?.user?.id,
           },
         },
       );
@@ -46,6 +49,7 @@ export const useConversation = (modelId: string) => {
     sendMessage,
     setShouldSubmit,
     setStreamingModelId,
+    data?.user?.id,
   ]);
 
   useEffect(() => {

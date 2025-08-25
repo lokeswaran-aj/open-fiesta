@@ -8,7 +8,11 @@ export const maxDuration = 60;
 initializeOTEL();
 
 export async function POST(req: Request) {
-  const { messages, model }: { messages: UIMessage[]; model: string } =
+  const {
+    messages,
+    model,
+    userId,
+  }: { messages: UIMessage[]; model: string; userId: string } =
     await req.json();
 
   const result = streamText({
@@ -29,6 +33,7 @@ export async function POST(req: Request) {
       isEnabled: true,
       metadata: {
         ls_run_name: model,
+        user_id: userId,
         environment: process.env.NODE_ENV,
       },
     },
