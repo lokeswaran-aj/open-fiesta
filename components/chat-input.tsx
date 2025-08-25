@@ -11,16 +11,21 @@ import {
   PromptInputTextarea,
 } from "@/components/prompt-kit/prompt-input";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 import { useInput } from "@/stores/use-input";
 import { useModels } from "@/stores/use-models";
 
-export const ChatInput = () => {
+type ChatInputProps = {
+  input: string;
+  setInput: (input: string) => void;
+};
+
+export const ChatInput = (props: ChatInputProps) => {
+  const { input, setInput } = props;
+  const { data } = authClient.useSession();
   const pathname = usePathname();
   const router = useRouter();
-  const isHomePage = pathname === "/";
 
-  const input = useInput((state) => state.input);
-  const setInput = useInput((state) => state.setInput);
   const isLoading = useInput((state) => state.isLoading);
   const setShouldSubmit = useInput((state) => state.setShouldSubmit);
   const setShouldStop = useInput((state) => state.setShouldStop);
@@ -46,10 +51,14 @@ export const ChatInput = () => {
   const isInputValid = input.trim() && selectedModels.length > 0 && !isLoading;
 
   const handleSubmit = () => {
+    if (!data) {
+      return router.push("/auth");
+    }
+
     if (!isInputValid) return;
 
-    setShouldSubmit(true);
-    if (isHomePage) router.push(`/c/${uuidv7()}`);
+    if (pathname === "/") router.push(`/c/${uuidv7()}`);
+    else if (pathname.includes("/c/")) setShouldSubmit(true);
   };
 
   return (

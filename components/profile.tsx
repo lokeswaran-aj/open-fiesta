@@ -1,8 +1,7 @@
 import { CircleUserRound } from "lucide-react";
-import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 import { Logout } from "./logout";
 import { Button } from "./ui/button";
 import {
@@ -12,11 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { Skeleton } from "./ui/skeleton";
 
-export const Profile = async () => {
-  const data = await auth.api.getSession({
-    headers: await headers(),
-  });
+export const Profile = () => {
+  const { data, isPending } = authClient.useSession();
+
+  if (isPending) {
+    return <Skeleton className="h-5 w-5 rounded-full" />;
+  }
 
   if (!data) {
     return (

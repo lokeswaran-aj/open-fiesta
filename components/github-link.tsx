@@ -1,6 +1,6 @@
+"use client";
 import Link from "next/link";
-import * as React from "react";
-
+import { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Icons from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,25 +11,39 @@ export const GitHubLink = () => {
     <Button asChild size="sm" variant="ghost" className="h-8 shadow-none">
       <Link href={siteConfig.links.github} target="_blank">
         <Icons.github className="size-5" />
-        <React.Suspense fallback={<Skeleton className="size-4" />}>
+        <Suspense fallback={<Skeleton className="size-4" />}>
           <StarsCount />
-        </React.Suspense>
+        </Suspense>
       </Link>
     </Button>
   );
 };
 
-const StarsCount = async () => {
-  const data = await fetch(siteConfig.links.githubApi, {
-    next: { revalidate: 3600 }, // 1 hour
-  });
-  const json = await data.json();
+const StarsCount = () => {
+  const [starsCount, setStarsCount] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const fetchStarsCount = async () => {
+      setIsLoading(true);
+      const data = await fetch(siteConfig.links.githubApi, {
+        next: { revalidate: 3600 }, // 1 hour
+      });
+      const json = await data.json();
+      setStarsCount(json.stargazers_count);
+      setIsLoading(false);
+    };
+    fetchStarsCount();
+  }, []);
 
   return (
     <span className="text-foreground text-sm tabular-nums">
-      {json.stargazers_count >= 1000
-        ? `${(json.stargazers_count / 1000).toFixed(1)}k`
-        : json.stargazers_count.toLocaleString()}
+      {isLoading ? (
+        <Skeleton className="size-4" />
+      ) : starsCount >= 1000 ? (
+        `${(starsCount / 1000).toFixed(1)}k`
+      ) : (
+        starsCount.toLocaleString()
+      )}
     </span>
   );
 };
