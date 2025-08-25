@@ -1,14 +1,13 @@
-import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { AI_MODELS } from "@/lib/models";
+import type { Model } from "@/lib/types";
 
 type ModelStore = {
-  models: GatewayLanguageModelEntry[];
-  setModels: (models: GatewayLanguageModelEntry[]) => void;
-  selectedModels: GatewayLanguageModelEntry[];
-  addSelectedModel: (model: GatewayLanguageModelEntry) => void;
-  removeSelectedModel: (model: GatewayLanguageModelEntry) => void;
+  models: Model[];
+  setModels: (models: Model[]) => void;
+  selectedModels: Model[];
+  addSelectedModel: (model: Model) => void;
+  removeSelectedModel: (model: Model) => void;
   reorderSelectedModels: (fromIndex: number, toIndex: number) => void;
   isLoading: boolean;
   setLoading: (loading: boolean) => void;
@@ -18,11 +17,11 @@ export const useModels = create<ModelStore>()(
   persist(
     (set) => ({
       models: [],
-      setModels: (models: GatewayLanguageModelEntry[]) => set({ models }),
+      setModels: (models: Model[]) => set({ models }),
       selectedModels: [],
-      addSelectedModel: (model: GatewayLanguageModelEntry) =>
+      addSelectedModel: (model: Model) =>
         set((state) => ({ selectedModels: [...state.selectedModels, model] })),
-      removeSelectedModel: (model: GatewayLanguageModelEntry) =>
+      removeSelectedModel: (model: Model) =>
         set((state) => ({
           selectedModels: state.selectedModels.filter((m) => m.id !== model.id),
         })),
@@ -40,16 +39,10 @@ export const useModels = create<ModelStore>()(
       name: "models",
       partialize: (state) => ({
         selectedModels: state.selectedModels,
-        // Note: isLoading is intentionally excluded from persistence
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
-          // Reset loading state on rehydration
           state.isLoading = true;
-          // If no models are selected from storage, use the default models
-          if (!state.selectedModels || state.selectedModels.length === 0) {
-            state.selectedModels = AI_MODELS;
-          }
         }
       },
     },

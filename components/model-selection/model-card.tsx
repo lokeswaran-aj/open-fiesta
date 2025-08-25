@@ -1,4 +1,3 @@
-import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { useEffect, useRef, useState } from "react";
 import {
   Tooltip,
@@ -6,12 +5,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { siteConfig } from "@/lib/config";
+import type { Model } from "@/lib/types";
 import { useModels } from "@/stores/use-models";
 import { ActionButton } from "./action-button";
 import { ModelLogo } from "./model-logo";
 
 type Props = {
-  model: GatewayLanguageModelEntry;
+  model: Model;
 };
 
 export const ModelCard = ({ model }: Props) => {
@@ -21,9 +21,8 @@ export const ModelCard = ({ model }: Props) => {
   const selectedModels = useModels((state) => state.selectedModels);
   const removeSelectedModel = useModels((state) => state.removeSelectedModel);
 
-  const formatPrice = (price: string) => {
-    const priceNum = parseFloat(price);
-    const pricePerMillion = (priceNum * 1000000).toFixed(2);
+  const formatPrice = (price: number) => {
+    const pricePerMillion = (price * 1000000).toFixed(2);
     return `$${pricePerMillion} / million tokens`;
   };
 
@@ -102,16 +101,28 @@ export const ModelCard = ({ model }: Props) => {
             <div className="font-medium text-foreground">ID</div>
             <div className="text-muted-foreground text-right">{model.id}</div>
           </div>
+          {model.pricing && (
+            <>
+              <div className="flex items-start justify-between">
+                <div className="font-medium text-foreground">Input Pricing</div>
+                <div className="text-muted-foreground text-right">
+                  {formatPrice(model.pricing.input)}
+                </div>
+              </div>
+              <div className="flex items-start justify-between">
+                <div className="font-medium text-foreground">
+                  Output Pricing
+                </div>
+                <div className="text-muted-foreground text-right">
+                  {formatPrice(model.pricing.output)}
+                </div>
+              </div>
+            </>
+          )}
           <div className="flex items-start justify-between">
-            <div className="font-medium text-foreground">Input Pricing</div>
+            <div className="font-medium text-foreground">Context</div>
             <div className="text-muted-foreground text-right">
-              {model.pricing ? formatPrice(model.pricing.input) : "-"}
-            </div>
-          </div>
-          <div className="flex items-start justify-between">
-            <div className="font-medium text-foreground">Output Pricing</div>
-            <div className="text-muted-foreground text-right">
-              {model.pricing ? formatPrice(model.pricing.output) : "-"}
+              {model.context}
             </div>
           </div>
         </div>

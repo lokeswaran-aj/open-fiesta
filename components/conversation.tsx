@@ -1,6 +1,5 @@
 "use client";
 
-import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { AiMessage } from "@/components/ai-message";
 import {
   ChatContainerContent,
@@ -8,11 +7,12 @@ import {
 } from "@/components/prompt-kit/chat-container";
 import { UserMessage } from "@/components/user-message";
 import { useConversation } from "@/hooks/useConversation";
+import type { Model } from "@/lib/types";
 import { Loading } from "./loading";
 import { ModelLogo } from "./model-selection/model-logo";
 
 type Props = {
-  model: GatewayLanguageModelEntry;
+  model: Model;
 };
 
 export const Conversation = (props: Props) => {

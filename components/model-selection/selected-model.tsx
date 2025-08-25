@@ -1,6 +1,5 @@
 "use client";
 
-import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import {
   closestCenter,
   DndContext,
@@ -18,6 +17,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripHorizontal } from "lucide-react";
+import type { Model } from "@/lib/types";
 import { useModels } from "@/stores/use-models";
 import { ActionButton } from "./action-button";
 import { ModelLogo } from "./model-logo";
@@ -27,8 +27,8 @@ const SortableModelItem = ({
   model,
   removeSelectedModel,
 }: {
-  model: GatewayLanguageModelEntry;
-  removeSelectedModel: (model: GatewayLanguageModelEntry) => void;
+  model: Model;
+  removeSelectedModel: (model: Model) => void;
 }) => {
   const {
     attributes,

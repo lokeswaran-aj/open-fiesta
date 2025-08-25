@@ -1,47 +1,43 @@
-import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { useMemo, useState } from "react";
 import { ProvidersOrder } from "@/lib/models";
+import type { Model } from "@/lib/types";
 
-export const useModelSearch = (models: GatewayLanguageModelEntry[]) => {
+export const useModelSearch = (models: Model[]) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter models based on search query
   const filteredModels = useMemo(() => {
     if (!searchQuery.trim()) return models;
 
     const query = searchQuery.toLowerCase();
     return models.filter((model) => {
-      const provider = model.id.split("/")[0];
-      const modelName = model.name?.toLowerCase() || "";
-      const providerId = provider.toLowerCase();
-      const fullId = model.id.toLowerCase();
+      const provider = model.provider.toLowerCase();
+      const modelName = model.name.toLowerCase();
+
+      const fullId = model.id;
 
       return (
         modelName.includes(query) ||
-        providerId.includes(query) ||
+        provider.includes(query) ||
         fullId.includes(query)
       );
     });
   }, [models, searchQuery]);
 
-  // Group filtered models by provider
   const groupedModels = filteredModels.reduce(
     (acc, model) => {
-      const provider = model.id.split("/")[0];
-      const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);
+      const providerName = model.provider;
       if (!acc[providerName]) {
         acc[providerName] = [];
       }
       acc[providerName].push(model);
       return acc;
     },
-    {} as Record<string, GatewayLanguageModelEntry[]>,
+    {} as Record<string, Model[]>,
   );
 
-  // Sort providers by their position in the ProvidersOrder array
   const sortProviders = (
-    [providerA]: [string, GatewayLanguageModelEntry[]],
-    [providerB]: [string, GatewayLanguageModelEntry[]],
+    [providerA]: [string, Model[]],
+    [providerB]: [string, Model[]],
   ) => {
     const indexA = ProvidersOrder.indexOf(providerA);
     const indexB = ProvidersOrder.indexOf(providerB);

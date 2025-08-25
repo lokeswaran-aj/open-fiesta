@@ -1,8 +1,9 @@
-import { gateway } from "@ai-sdk/gateway";
+import { aimlapi } from "@ai-ml.api/aimlapi-vercel-ai";
+
 import { extractReasoningMiddleware, wrapLanguageModel } from "ai";
 
 export const getModel = (modelId: string) =>
   wrapLanguageModel({
-    model: gateway(modelId),
+    model: aimlapi(modelId),
     middleware: extractReasoningMiddleware({ tagName: "think" }),
   });

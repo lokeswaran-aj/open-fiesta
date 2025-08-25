@@ -28,7 +28,7 @@ export const AvailableModelsList = () => {
     const fetchModels = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/models");
+        const res = await fetch("/api/models?provider=aiml");
         const data = await res.json();
         if (res.ok) {
           setModels(data.models);

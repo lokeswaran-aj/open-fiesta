@@ -1,9 +1,9 @@
-import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
+import type { Model } from "@/lib/types";
 import { ModelCard } from "./model-card";
 
 type ProviderSectionProps = {
   providerName: string;
-  models: GatewayLanguageModelEntry[];
+  models: Model[];
 };
 
 export const ProviderSection = ({
