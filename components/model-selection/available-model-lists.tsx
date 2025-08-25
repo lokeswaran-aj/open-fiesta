@@ -1,8 +1,9 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { fetchModels } from "@/actions/fetch-models";
 import { useModelSearch } from "@/hooks/useModelSearch";
-import { useModels } from "@/stores/use-models";
+import type { Model } from "@/lib/types";
 import { EmptyState } from "./empty-state";
 import { ModelListSkeleton } from "./model-list-skeleton";
 import { ProviderSection } from "./provider-section";
@@ -10,10 +11,9 @@ import { SearchInput } from "./search-input";
 import { SearchResultsInfo } from "./search-results-info";
 
 export const AvailableModelsList = () => {
-  const { models, setModels, isLoading, setLoading } = useModels(
-    (state) => state,
-  );
-
+  const [models, setModels] = useState<Model[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const {
     searchQuery,
     setSearchQuery,
@@ -25,24 +25,24 @@ export const AvailableModelsList = () => {
   } = useModelSearch(models);
 
   useEffect(() => {
-    const fetchModels = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/models?provider=aiml");
-        const data = await res.json();
-        if (res.ok) {
-          setModels(data.models);
-        } else {
-          toast.error(data.error);
-        }
-      } catch {
-        toast.error("Failed to fetch models");
-      } finally {
-        setLoading(false);
+    const loadModels = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      const { models: fetchedModels, error: fetchError } = await fetchModels();
+
+      if (fetchError) {
+        setError(fetchError);
+        toast.error(fetchError);
+      } else {
+        setModels(fetchedModels);
       }
+
+      setIsLoading(false);
     };
-    fetchModels();
-  }, [setModels, setLoading]);
+
+    loadModels();
+  }, []);
 
   if (isLoading) {
     return (
@@ -58,6 +58,27 @@ export const AvailableModelsList = () => {
         </div>
         <div className="flex-1 overflow-y-auto min-h-0">
           <ModelListSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  if (models.length === 0 && error) {
+    return (
+      <div className="flex flex-col flex-1 min-h-0">
+        <div className="flex-shrink-0 space-y-4 pb-4">
+          <h2 className="text-lg font-semibold">Available Models</h2>
+          <SearchInput
+            value=""
+            onChange={() => {}}
+            onClear={() => {}}
+            placeholder="Search models by name or provider..."
+          />
+        </div>
+        <div className="flex-1 overflow-y-auto min-h-0 flex items-center justify-center">
+          <div className="text-center text-muted-foreground">
+            <p>Failed to load models. Please try again later.</p>
+          </div>
         </div>
       </div>
     );
