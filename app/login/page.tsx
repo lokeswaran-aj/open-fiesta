@@ -1,12 +1,15 @@
 import { ArrowLeftIcon } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/login-form";
-import { authClient } from "@/lib/auth-client";
+import { auth } from "@/lib/auth";
 
 export default async function LoginPage() {
-  const session = await authClient.getSession();
-  if (session) {
+  const data = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (data) {
     return redirect("/");
   }
   return (
