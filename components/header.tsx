@@ -1,4 +1,5 @@
 import { GitHubLink } from "./github-link";
+import { Logout } from "./logout";
 import { ModelSelector } from "./model-selection/model-selector";
 import { ThemeSwitcher } from "./theme-switcher";
 
@@ -9,6 +10,7 @@ export const Header = () => {
         <ModelSelector />
         <ThemeSwitcher />
         <GitHubLink />
+        <Logout />
       </div>
     </header>
   );
