@@ -3,7 +3,7 @@
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { Button } from "./ui/button";
+import { DropdownMenuItem } from "./ui/dropdown-menu";
 
 export const Logout = () => {
   const router = useRouter();
@@ -13,9 +13,9 @@ export const Logout = () => {
   };
 
   return (
-    <Button variant="outline" size="sm" onClick={handleLogout}>
+    <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
       <LogOut className="size-4" />
-      Logout
-    </Button>
+      Log out
+    </DropdownMenuItem>
   );
 };
