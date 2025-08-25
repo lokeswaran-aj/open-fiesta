@@ -25,9 +25,6 @@ export const useModelSearch = (models: Model[]) => {
 
   const groupedModels = filteredModels.reduce(
     (acc, model) => {
-      if (model.id === "claude-opus-4-20250514") {
-        return acc;
-      }
       const providerName = model.provider;
       if (!acc[providerName]) {
         acc[providerName] = [];
