@@ -12,7 +12,8 @@ export async function POST(req: Request) {
     messages,
     model,
     userId,
-  }: { messages: UIMessage[]; model: string; userId: string } =
+    gateway,
+  }: { messages: UIMessage[]; model: string; userId: string; gateway: string } =
     await req.json();
 
   if (model.startsWith("claude-opus")) {
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: getModel(model),
+    model: getModel(model, gateway),
     messages: [
       {
         role: "assistant",
