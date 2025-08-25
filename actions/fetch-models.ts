@@ -3,7 +3,7 @@
 import type { Model } from "@/lib/types";
 
 export const fetchModels = async (
-  gateway: string = "vercel",
+  gateway: string = "openrouter",
 ): Promise<{ models: Model[]; error?: string }> => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";

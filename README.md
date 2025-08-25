@@ -1,6 +1,6 @@
 # 🎉 Open Fiesta
 
-**Open Fiesta** is an open-source alternative to [AI Fiesta](https://aifiesta.ai), built entirely with **Vercel’s cutting-edge ecosystem** — including Next.js, AI SDK, AI Gateway — plus **Shadcn UI, PromptKit, TogetherAI, Tailwind CSS, and TypeScript**.
+**Open Fiesta** is an open-source alternative to [AI Fiesta](https://aifiesta.ai), built entirely with **Vercel’s cutting-edge ecosystem** — including Next.js, AI SDK, AI Gateway, OpenRouter, AIMLAPI, Shadcn UI, PromptKit, TogetherAI, Tailwind CSS, and TypeScript.
 
 With Open Fiesta, you can:
 
@@ -30,6 +30,8 @@ With Open Fiesta, you can:
 - Shadcn UI
 - Vercel AI SDK
 - Vercel AI Gateway
+- OpenRouter
+- AIMLAPI
 - PromptKit
 - TogetherAI
 - Better Auth

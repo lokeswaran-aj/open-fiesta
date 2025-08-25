@@ -8,6 +8,7 @@ export interface Model {
   };
   context?: string;
   gateway: "openrouter" | "aimlapi" | "vercel";
+  isFree: boolean;
 }
 
 export interface AIMLModel {

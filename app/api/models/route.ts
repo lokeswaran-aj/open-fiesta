@@ -1,6 +1,7 @@
 import { gateway as aiGateway } from "@ai-sdk/gateway";
 import millify from "millify";
 import { NextResponse } from "next/server";
+import { freeModels } from "@/lib/models";
 import type { AIMLModel, Model, OpenRouterModel } from "@/lib/types";
 
 const formatPrice = (price: string) => {
@@ -33,6 +34,7 @@ export const GET = async (request: Request) => {
             output: formatPrice(model.pricing.completion),
           },
           gateway: "openrouter",
+          isFree: freeModels.has(model.id),
         });
         return acc;
       }, []);
@@ -56,6 +58,7 @@ export const GET = async (request: Request) => {
               input: formatPrice("-1"),
               output: formatPrice("-1"),
             },
+            isFree: freeModels.has(model.id),
           });
         }
         return acc;
@@ -76,6 +79,7 @@ export const GET = async (request: Request) => {
               output: formatPrice(model.pricing?.output || "-1"),
             },
             context: "-",
+            isFree: freeModels.has(model.id),
           });
         }
         return acc;
