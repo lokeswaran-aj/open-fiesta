@@ -1,8 +1,14 @@
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/login-form";
+import { authClient } from "@/lib/auth-client";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await authClient.getSession();
+  if (session) {
+    return redirect("/");
+  }
   return (
     <div className="relative h-screen">
       <Link
