@@ -9,7 +9,7 @@ export const Logout = () => {
   const router = useRouter();
   const handleLogout = async () => {
     await authClient.signOut();
-    router.refresh();
+    router.push("/");
   };
 
   return (
