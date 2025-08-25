@@ -53,7 +53,20 @@ export const useModelSearch = (models: Model[]) => {
     return providerA.localeCompare(providerB);
   };
 
-  const sortedProviders = Object.entries(groupedModels).sort(sortProviders);
+  const sortedProviders = Object.entries(groupedModels)
+    .sort(sortProviders)
+    .map(
+      ([provider, models]) =>
+        [
+          provider,
+          models.sort((a, b) => {
+            if (a.isFree !== b.isFree) {
+              return a.isFree ? -1 : 1;
+            }
+            return a.name.localeCompare(b.name);
+          }),
+        ] as [string, Model[]],
+    );
 
   const handleClearSearch = () => {
     setSearchQuery("");
