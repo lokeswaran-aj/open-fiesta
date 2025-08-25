@@ -3,13 +3,12 @@
 import type { Model } from "@/lib/types";
 
 export const fetchModels = async (
-  provider: string = "aiml",
-  revalidateSeconds: number = 3600,
+  gateway: string = "vercel",
 ): Promise<{ models: Model[]; error?: string }> => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/models?provider=${provider}`, {
-      next: { revalidate: revalidateSeconds },
+    const res = await fetch(`${baseUrl}/api/models?gateway=${gateway}`, {
+      next: { revalidate: 3600 },
     });
 
     const data = await res.json();
