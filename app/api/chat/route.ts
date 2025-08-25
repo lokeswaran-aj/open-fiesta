@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     experimental_telemetry: {
       isEnabled: true,
       metadata: {
-        ls_run_name: `open-fiesta`,
+        ls_run_name: model,
         environment: process.env.NODE_ENV,
       },
     },
