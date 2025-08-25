@@ -5,13 +5,22 @@ import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/login-form";
 import { auth } from "@/lib/auth";
 
-export default async function LoginPage() {
+type AuthPageProps = {
+  searchParams: Promise<{ next?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: AuthPageProps) {
   const data = await auth.api.getSession({
     headers: await headers(),
   });
+
+  const params = await searchParams;
+  const nextUrl = params.next;
+
   if (data) {
-    return redirect("/");
+    return redirect(nextUrl || "/");
   }
+
   return (
     <div className="relative h-screen">
       <Link
@@ -23,7 +32,7 @@ export default async function LoginPage() {
       </Link>
       <main className="flex h-full flex-col items-center justify-center px-4 sm:px-6">
         <div className="w-full max-w-md">
-          <LoginForm />
+          <LoginForm nextUrl={nextUrl} />
         </div>
       </main>
     </div>

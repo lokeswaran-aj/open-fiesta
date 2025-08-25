@@ -4,13 +4,14 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { signInWithGithub, signInWithGoogle } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
 import Icons from "./ui/icons";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+type LoginFormProps = {
+  nextUrl?: string;
+};
+
+export function LoginForm(props: LoginFormProps) {
+  const { nextUrl } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +19,7 @@ export function LoginForm({
     setIsLoading(true);
     setError(null);
 
-    const { data, error } = await signInWithGoogle();
+    const { data, error } = await signInWithGoogle(nextUrl);
 
     if (data?.url) {
       window.location.href = data.url;
@@ -35,7 +36,7 @@ export function LoginForm({
     setIsLoading(true);
     setError(null);
 
-    const { data, error } = await signInWithGithub();
+    const { data, error } = await signInWithGithub(nextUrl);
 
     if (data?.url) {
       window.location.href = data.url;
@@ -49,7 +50,7 @@ export function LoginForm({
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-6 text-center">
         <div className="flex items-center justify-center gap-4">
           <Icons.logo className="h-6 md:h-8 w-auto" />
