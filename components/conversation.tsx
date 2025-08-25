@@ -24,7 +24,7 @@ export const Conversation = (props: Props) => {
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
       <div className="p-3 border-b border-gray-300 dark:border-gray-700">
         <div className="flex items-center gap-2">
-          <ModelLogo modelId={model.id} />
+          <ModelLogo provider={model.provider} />
           <h3 className="font-medium text-sm">{model.name}</h3>
         </div>
       </div>
@@ -36,7 +36,7 @@ export const Conversation = (props: Props) => {
             return isAssistant ? (
               <AiMessage
                 key={message.id}
-                modelId={model.id}
+                provider={model.provider}
                 message={message}
                 isStreaming={
                   status === "streaming" && index === messages.length - 1
@@ -46,7 +46,7 @@ export const Conversation = (props: Props) => {
               <UserMessage key={message.id} message={message} />
             );
           })}
-          {status === "submitted" && <Loading modelId={model.id} />}
+          {status === "submitted" && <Loading provider={model.provider} />}
         </ChatContainerContent>
       </ChatContainerRoot>
     </div>

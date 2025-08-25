@@ -17,18 +17,18 @@ import {
 type Props = {
   message: UIMessage;
   isStreaming: boolean;
-  modelId: string;
+  provider: string;
 };
 
 export const AiMessage = (props: Props) => {
-  const { message, isStreaming, modelId } = props;
+  const { message, isStreaming, provider } = props;
 
   return (
     <Message className="justify-start">
       <div className="flex items-start mt-2.5 mr-[-10px]">
         <MessageAvatar
           className="size-5 flex items-center justify-center"
-          component={<ModelLogo modelId={modelId} />}
+          component={<ModelLogo provider={provider} />}
         />
       </div>
       <div className="max-w-[85%] flex-1 sm:max-w-[75%]">

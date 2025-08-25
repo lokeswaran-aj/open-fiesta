@@ -57,7 +57,7 @@ export const ModelCard = ({ model }: Props) => {
     >
       <div className="flex items-center justify-between px-4 py-3 text-sm bg-card rounded-t-lg border-b gap-2">
         <div className="flex items-center min-w-0 flex-1">
-          <ModelLogo modelId={model.id} />
+          <ModelLogo provider={model.provider} />
           <div className="min-w-0 flex-1 ml-2">
             {isTextTruncated ? (
               <Tooltip>

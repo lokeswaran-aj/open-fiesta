@@ -11,22 +11,34 @@ export function sortModelsByProvider(
 }
 
 export const ProvidersOrder = [
+  "Open AI",
   "Openai",
   "Anthropic",
   "Google",
   "Deepseek",
+  "DeepSeek AI",
   "Xai",
+  "X AI",
   "Meta",
   "Moonshotai",
   "Perplexity",
   "Alibaba",
+  "Alibaba Cloud",
+  "Moonshot",
   "Amazon",
   "Cohere",
   "Mistral",
-  "Vercel",
+  "Mistral AI",
   "Zai",
+  "Zhipu AI",
   "Inception",
   "Morph",
+  "Nvidia",
+  "Vercel",
+  "NousResearch",
+  "Minimax AI",
+  "Anthracite",
+  "Bagoodex",
 ];
 export const models: GatewayLanguageModelEntry[] = [
   {

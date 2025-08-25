@@ -60,7 +60,7 @@ const SortableModelItem = ({
       >
         <GripHorizontal size={16} />
       </button>
-      <ModelLogo modelId={model.id} />
+      <ModelLogo provider={model.provider} />
       <p>{model.name}</p>
       <ActionButton
         type="remove"
