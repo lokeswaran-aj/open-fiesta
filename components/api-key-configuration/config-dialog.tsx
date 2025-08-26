@@ -1,7 +1,6 @@
 "use client";
 
 import { KeyRound } from "lucide-react";
-import type React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -19,11 +18,7 @@ import { useApiKey } from "@/stores/use-api-key";
 import { useDialogState } from "@/stores/use-dialog-state";
 import { ConfigInput } from "./config-input";
 
-interface ConfigDialogProps {
-  trigger?: React.ReactNode;
-}
-
-export const ConfigDialog = ({ trigger }: ConfigDialogProps) => {
+export const ConfigDialog = () => {
   const {
     vercelApiKey,
     setVercelApiKey,
@@ -66,12 +61,10 @@ export const ConfigDialog = ({ trigger }: ConfigDialogProps) => {
     <Dialog open={isConfigDialogOpen} onOpenChange={setConfigDialogOpen}>
       <form>
         <DialogTrigger asChild>
-          {trigger || (
-            <Button variant="outline" size="sm">
-              <KeyRound className="w-4 h-4" />
-              <span className="hidden sm:block">Config API Key</span>
-            </Button>
-          )}
+          <Button variant="outline" size="sm">
+            <KeyRound className="w-4 h-4" />
+            <span className="hidden sm:block">Config API Key</span>
+          </Button>
         </DialogTrigger>
         <DialogContent
           className="sm:max-w-[425px]"

@@ -1,12 +1,18 @@
 "use client";
 import { Settings2Icon } from "lucide-react";
+import { useDialogState } from "@/stores/use-dialog-state";
 import { useModels } from "@/stores/use-models";
 import { Conversation } from "./conversation";
-import { ModelSelector } from "./model-selection/model-selector";
 import { Button } from "./ui/button";
 
 export const MultiConversation = () => {
   const selectedModels = useModels((state) => state.selectedModels);
+  const setModelSelectorOpen = useDialogState(
+    (state) => state.setModelSelectorOpen,
+  );
+  const handleOpenModelSelector = () => {
+    setModelSelectorOpen(true);
+  };
   const isLoading = useModels((state) => state.isLoading);
 
   if (isLoading) {
@@ -20,14 +26,10 @@ export const MultiConversation = () => {
           <p className="text-gray-500 dark:text-gray-400">
             Pick a model to vibe with 💬✨
           </p>
-          <ModelSelector
-            trigger={
-              <Button variant="outline" size="sm">
-                <Settings2Icon className="size-4" />
-                <span>Pick a model</span>
-              </Button>
-            }
-          />
+          <Button variant="outline" size="sm" onClick={handleOpenModelSelector}>
+            <Settings2Icon className="size-4" />
+            <span>Pick a model</span>
+          </Button>
         </div>
       )}
       {selectedModels.map((model) => (
