@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { fetchModels } from "@/actions/fetch-models";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useModelSearch } from "@/hooks/use-model-search";
 import type { Model } from "@/lib/types";
 import { EmptyState } from "./empty-state";
@@ -107,15 +108,35 @@ export const AvailableModelsList = () => {
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto min-h-0">
         {hasResults ? (
-          <div className="space-y-6 pr-2">
-            {sortedProviders.map(([providerName, models]) => (
-              <ProviderSection
-                key={providerName}
-                providerName={providerName}
-                models={models}
-              />
-            ))}
-          </div>
+          <Tabs defaultValue="vercel" className="h-full flex flex-col">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="openrouter">OpenRouter</TabsTrigger>
+              <TabsTrigger value="vercel">Vercel</TabsTrigger>
+              <TabsTrigger value="aimlapi">AIML API</TabsTrigger>
+            </TabsList>
+
+            {sortedProviders.map((gatewayObj) => {
+              const gateway = Object.keys(gatewayObj)[0];
+              const providers = gatewayObj[gateway] as [string, Model[]][];
+              return (
+                <TabsContent
+                  key={gateway}
+                  value={gateway}
+                  className="flex-1 mt-4"
+                >
+                  <div className="space-y-6 pr-2">
+                    {providers.map(([providerName, models]) => (
+                      <ProviderSection
+                        key={providerName}
+                        providerName={providerName}
+                        models={models}
+                      />
+                    ))}
+                  </div>
+                </TabsContent>
+              );
+            })}
+          </Tabs>
         ) : isSearching ? (
           <EmptyState onClearSearch={handleClearSearch} />
         ) : null}

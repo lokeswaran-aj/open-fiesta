@@ -23,17 +23,36 @@ export const useModelSearch = (models: Model[]) => {
     });
   }, [models, searchQuery]);
 
-  const groupedModels = filteredModels.reduce(
-    (acc, model) => {
-      const providerName = model.provider;
-      if (!acc[providerName]) {
-        acc[providerName] = [];
-      }
-      acc[providerName].push(model);
-      return acc;
-    },
-    {} as Record<string, Model[]>,
-  );
+  const groupedByGatewayAndProvider = filteredModels.reduce<
+    Record<string, Record<string, Model[]>>
+  >((acc, model) => {
+    const gateway = model.gateway;
+    const provider = model.provider;
+
+    if (!acc[gateway]) {
+      acc[gateway] = {};
+    }
+
+    if (!acc[gateway][provider]) {
+      acc[gateway][provider] = [];
+    }
+
+    acc[gateway][provider].push(model);
+    return acc;
+  }, {});
+
+  const groupedByGateway = groupedByGatewayAndProvider;
+
+  const sortGateways = (
+    [gatewayA]: [string, Record<string, Model[]>],
+    [gatewayB]: [string, Record<string, Model[]>],
+  ) => {
+    const gatewayOrder = ["openrouter", "vercel", "aimlapi"];
+    const gatewayIndexA = gatewayOrder.indexOf(gatewayA);
+    const gatewayIndexB = gatewayOrder.indexOf(gatewayB);
+
+    return gatewayIndexA - gatewayIndexB;
+  };
 
   const sortProviders = (
     [providerA]: [string, Model[]],
@@ -53,11 +72,12 @@ export const useModelSearch = (models: Model[]) => {
     return providerA.localeCompare(providerB);
   };
 
-  const sortedProviders = Object.entries(groupedModels)
-    .sort(sortProviders)
-    .map(
-      ([provider, models]) =>
-        [
+  const sortedProviders = Object.entries(groupedByGateway)
+    .sort(sortGateways)
+    .map(([gateway, providers]) => ({
+      [gateway]: Object.entries(providers)
+        .sort(sortProviders)
+        .map(([provider, models]) => [
           provider,
           models.sort((a, b) => {
             if (a.isFree !== b.isFree) {
@@ -65,8 +85,8 @@ export const useModelSearch = (models: Model[]) => {
             }
             return a.name.localeCompare(b.name);
           }),
-        ] as [string, Model[]],
-    );
+        ]),
+    }));
 
   const handleClearSearch = () => {
     setSearchQuery("");
