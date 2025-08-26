@@ -90,10 +90,10 @@ Generate and run database migrations:
 
 ```bash
 # Generate migration files (if schema changes)
-pnpm dlx drizzle-kit generate
+npx drizzle-kit generate
 
 # Apply migrations to database
-pnpm dlx drizzle-kit migrate
+npx drizzle-kit migrate
 ```
 
 ### 6. API Keys Setup
