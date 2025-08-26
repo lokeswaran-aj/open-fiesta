@@ -1,3 +1,4 @@
+import { ConfigDialog } from "./api-key-configuration/config-dialog";
 import { GitHubLink } from "./github-link";
 import { ModelSelector } from "./model-selection/model-selector";
 import { Profile } from "./profile";
@@ -7,6 +8,7 @@ export const Header = () => {
   return (
     <header className="flex h-16 shrink-0 items-center justify-end gap-2 border-b border-gray-300 dark:border-gray-700">
       <div className="flex items-center gap-2 px-4">
+        <ConfigDialog />
         <ModelSelector />
         <ThemeSwitcher />
         <GitHubLink />
