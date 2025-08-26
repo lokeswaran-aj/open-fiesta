@@ -1,30 +1,42 @@
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { initializeOTEL } from "langsmith/experimental/otel/setup";
-import { siteConfig } from "@/lib/config";
-import { getModel } from "./get-model";
+import type { Gateway } from "@/lib/types";
+import { prepareModelAndMessages } from "./prepare-model-and-messages";
 import { getProviderOptions } from "./providerOptions";
 
 export const maxDuration = 60;
 initializeOTEL();
 
+type ChatRequest = {
+  messages: UIMessage[];
+  model: string;
+  userId: string;
+  isFree: boolean;
+  apikey?: string;
+};
+
 export async function POST(req: Request) {
-  const {
-    messages,
-    model,
-    userId,
-  }: { messages: UIMessage[]; model: string; userId: string } =
+  const { messages, model, userId, apikey, isFree }: ChatRequest =
     await req.json();
 
+  if (!isFree && !apikey?.trim().length) {
+    return new Response("API key is required", { status: 403 });
+  }
+
+  const modelMessages = convertToModelMessages(messages);
   const [gateway, modelId] = model.split(":");
+
+  if (!gateway || !modelId) {
+    return new Response("Invalid model", { status: 400 });
+  }
+
   const result = streamText({
-    model: getModel(modelId, gateway),
-    messages: [
-      {
-        role: "assistant",
-        content: siteConfig.systemPrompt,
-      },
-      ...convertToModelMessages(messages),
-    ],
+    ...prepareModelAndMessages(
+      modelId,
+      gateway as Gateway,
+      modelMessages,
+      apikey,
+    ),
     providerOptions: getProviderOptions(model),
     onError: (error) => {
       console.dir(error, { depth: null });

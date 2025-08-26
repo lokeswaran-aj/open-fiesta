@@ -9,7 +9,7 @@ export const fetchModels = async (): Promise<{
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const res = await fetch(`${baseUrl}/api/models`, {
-      next: { revalidate: 1 },
+      next: { revalidate: 3600 },
     });
 
     const data = await res.json();

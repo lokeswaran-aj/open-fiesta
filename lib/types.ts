@@ -7,9 +7,11 @@ export interface Model {
     output: string;
   };
   context?: string;
-  gateway: "openrouter" | "aimlapi" | "vercel";
+  gateway: Gateway;
   isFree: boolean;
 }
+
+export type Gateway = "openrouter" | "aimlapi" | "vercel";
 
 export interface AIMLModel {
   id: string;

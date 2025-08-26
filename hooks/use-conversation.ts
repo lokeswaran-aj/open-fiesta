@@ -1,10 +1,15 @@
 import { useChat } from "@ai-sdk/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import type { Model } from "@/lib/types";
+import { useApiKey } from "@/stores/use-api-key";
 import { useInput } from "@/stores/use-input";
 
-export const useConversation = (modelId: string) => {
+export const useConversation = (model: Model) => {
   const input = useInput((state) => state.input);
+  const aimlApiKey = useApiKey((state) => state.aimlApiKey);
+  const openRouterApiKey = useApiKey((state) => state.openRouterApiKey);
+  const vercelApiKey = useApiKey((state) => state.vercelApiKey);
   const shouldSubmit = useInput((state) => state.shouldSubmit);
   const setShouldSubmit = useInput((state) => state.setShouldSubmit);
   const shouldStop = useInput((state) => state.shouldStop);
@@ -14,29 +19,44 @@ export const useConversation = (modelId: string) => {
     (state) => state.removeStreamedModelId,
   );
   const { data } = authClient.useSession();
+  const [apiKey, setApiKey] = useState({
+    openrouter: openRouterApiKey,
+    vercel: vercelApiKey,
+    aimlapi: aimlApiKey,
+  });
+
+  useEffect(() => {
+    setApiKey({
+      openrouter: openRouterApiKey,
+      vercel: vercelApiKey,
+      aimlapi: aimlApiKey,
+    });
+  }, [openRouterApiKey, vercelApiKey, aimlApiKey]);
 
   const { messages, sendMessage, stop, status, error } = useChat({
-    id: `${modelId}-conversation`,
+    id: `${model.id}-conversation`,
     onFinish: () => {
-      removeStreamedModelId(modelId);
+      removeStreamedModelId(model.id);
     },
     onError: (error) => {
       console.dir(error, { depth: null });
-      removeStreamedModelId(modelId);
+      removeStreamedModelId(model.id);
     },
   });
 
   useEffect(() => {
     if (shouldSubmit) {
-      setStreamingModelId(modelId);
+      setStreamingModelId(model.id);
       sendMessage(
         {
           text: input,
         },
         {
           body: {
-            model: modelId,
+            model: model.id,
             userId: data?.user?.id,
+            isFree: model.isFree,
+            apikey: apiKey[model.gateway as keyof typeof apiKey],
           },
         },
       );
@@ -45,20 +65,23 @@ export const useConversation = (modelId: string) => {
   }, [
     input,
     shouldSubmit,
-    modelId,
+    model.id,
+    model.gateway,
+    model.isFree,
     sendMessage,
     setShouldSubmit,
     setStreamingModelId,
     data?.user?.id,
+    apiKey[model.gateway as keyof typeof apiKey],
   ]);
 
   useEffect(() => {
     if (shouldStop) {
       stop();
       setShouldStop(false);
-      removeStreamedModelId(modelId);
+      removeStreamedModelId(model.id);
     }
-  }, [shouldStop, setShouldStop, stop, removeStreamedModelId, modelId]);
+  }, [shouldStop, setShouldStop, stop, removeStreamedModelId, model.id]);
 
   return { messages, status, error };
 };

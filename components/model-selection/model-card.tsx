@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { siteConfig } from "@/lib/config";
 import type { Model } from "@/lib/types";
+import { useApiKey } from "@/stores/use-api-key";
 import { useDialogState } from "@/stores/use-dialog-state";
 import { useModels } from "@/stores/use-models";
 import { ActionButton } from "./action-button";
@@ -24,6 +25,9 @@ export const ModelCard = ({ model }: Props) => {
   const selectedModels = useModels((state) => state.selectedModels);
   const removeSelectedModel = useModels((state) => state.removeSelectedModel);
   const { openConfigDialogFromModelSelector } = useDialogState();
+  const aimlApiKey = useApiKey((state) => state.aimlApiKey);
+  const openRouterApiKey = useApiKey((state) => state.openRouterApiKey);
+  const vercelApiKey = useApiKey((state) => state.vercelApiKey);
 
   useEffect(() => {
     const checkTruncation = () => {
@@ -48,6 +52,20 @@ export const ModelCard = ({ model }: Props) => {
   };
 
   const isSelected = selectedModels.some((m) => m.id === model.id);
+
+  const shouldEnableModel = (model: Model) => {
+    if (model.isFree) return true;
+    if (model.gateway === "aimlapi") {
+      return aimlApiKey !== "";
+    }
+    if (model.gateway === "openrouter") {
+      return openRouterApiKey !== "";
+    }
+    if (model.gateway === "vercel") {
+      return vercelApiKey !== "";
+    }
+    return false;
+  };
 
   return (
     <div
@@ -83,7 +101,7 @@ export const ModelCard = ({ model }: Props) => {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          {model.isFree ? (
+          {shouldEnableModel(model) ? (
             <ActionButton
               type={isSelected ? "remove" : "add"}
               size="md"

@@ -19,7 +19,7 @@ type Props = {
 export const Conversation = (props: Props) => {
   const { model } = props;
 
-  const { messages, status, error } = useConversation(model.id);
+  const { messages, status, error } = useConversation(model);
 
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
