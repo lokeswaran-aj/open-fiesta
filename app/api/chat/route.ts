@@ -12,16 +12,12 @@ export async function POST(req: Request) {
     messages,
     model,
     userId,
-    gateway,
-  }: { messages: UIMessage[]; model: string; userId: string; gateway: string } =
+  }: { messages: UIMessage[]; model: string; userId: string } =
     await req.json();
 
-  if (model.startsWith("claude-opus")) {
-    return new Response("Bro! I am going bankrupt🥺", { status: 400 });
-  }
-
+  const [gateway, modelId] = model.split(":");
   const result = streamText({
-    model: getModel(model, gateway),
+    model: getModel(modelId, gateway),
     messages: [
       {
         role: "assistant",

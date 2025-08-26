@@ -122,7 +122,9 @@ export const ModelCard = ({ model }: Props) => {
         <div className="space-y-3">
           <div className="flex items-start justify-between">
             <div className="font-medium text-foreground">ID</div>
-            <div className="text-muted-foreground text-right">{model.id}</div>
+            <div className="text-muted-foreground text-right">
+              {model.id.split(":")[1]}
+            </div>
           </div>
           <div className="flex items-start justify-between">
             <div className="font-medium text-foreground">Input Pricing</div>

@@ -43,7 +43,7 @@ export const ConfigInput = (props: Props) => {
           href={getApiKeyHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:underline underline-offset-4 flex items-center gap-1 text-muted-foreground text-sm"
+          className="underline underline-offset-3 flex items-center gap-1 text-muted-foreground text-xs"
         >
           Get API Key
           <ArrowUpRight className="w-4 h-4" />

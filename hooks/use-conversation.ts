@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useInput } from "@/stores/use-input";
 
-export const useConversation = (modelId: string, gateway: string) => {
+export const useConversation = (modelId: string) => {
   const input = useInput((state) => state.input);
   const shouldSubmit = useInput((state) => state.shouldSubmit);
   const setShouldSubmit = useInput((state) => state.setShouldSubmit);
@@ -37,7 +37,6 @@ export const useConversation = (modelId: string, gateway: string) => {
           body: {
             model: modelId,
             userId: data?.user?.id,
-            gateway,
           },
         },
       );
@@ -51,7 +50,6 @@ export const useConversation = (modelId: string, gateway: string) => {
     setShouldSubmit,
     setStreamingModelId,
     data?.user?.id,
-    gateway,
   ]);
 
   useEffect(() => {

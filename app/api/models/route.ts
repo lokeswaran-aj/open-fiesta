@@ -22,7 +22,7 @@ const fetchOpenRouterModels = async (): Promise<Model[]> => {
     return data.reduce<Model[]>((acc, model) => {
       const provider = model.id.split("/")[0].trim().replace("-", "");
       acc.push({
-        id: model.id,
+        id: `openrouter:${model.id}`,
         name: model.name,
         provider,
         context: millify(model.context_length),
@@ -51,7 +51,7 @@ const fetchAIMLModels = async (): Promise<Model[]> => {
     return data.reduce<Model[]>((acc, model) => {
       if (model.type === "chat-completion") {
         acc.push({
-          id: model.id,
+          id: `aimlapi:${model.id}`,
           name: model.info.name,
           provider: model.info.developer.toLowerCase().replace(" ", ""),
           context: millify(model.info.contextLength),
@@ -78,7 +78,7 @@ const fetchVercelModels = async (): Promise<Model[]> => {
     return models.reduce<Model[]>((acc, model) => {
       if (model.modelType === "language") {
         acc.push({
-          id: model.id,
+          id: `vercel:${model.id}`,
           name: model.name,
           provider: model.id.split("/")[0].trim(),
           gateway: "vercel",
