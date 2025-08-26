@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { ChatInput } from "@/components/chat-input";
-import { Header } from "@/components/header";
 import { MultiConversation } from "@/components/multi-conversation";
 import { useInitialPrompt } from "@/stores/use-initial-prompt";
 import { useInput } from "@/stores/use-input";
@@ -23,14 +22,11 @@ export default function Chat() {
   }, [initialPrompt, setInput, setShouldSubmit, setInitialPrompt]);
 
   return (
-    <div className="flex flex-col h-full max-h-full overflow-hidden">
-      <Header />
-      <main className="flex flex-col h-full max-h-full overflow-hidden">
-        <div className="flex-1 overflow-hidden">
-          <MultiConversation />
-        </div>
-        <ChatInput input={input} setInput={setInput} />
-      </main>
-    </div>
+    <main className="flex flex-col h-full max-h-full overflow-hidden">
+      <div className="flex-1 overflow-hidden">
+        <MultiConversation />
+      </div>
+      <ChatInput input={input} setInput={setInput} />
+    </main>
   );
 }
