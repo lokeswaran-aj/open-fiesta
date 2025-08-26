@@ -9,12 +9,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { siteConfig } from "@/lib/config";
+import { useDialogState } from "@/stores/use-dialog-state";
 import { AvailableModelsList } from "./available-model-lists";
 import { SelectedModel } from "./selected-model";
 
 export const ModelSelector = () => {
+  const { isModelSelectorOpen, setModelSelectorOpen } = useDialogState();
+
   return (
-    <Dialog>
+    <Dialog open={isModelSelectorOpen} onOpenChange={setModelSelectorOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Settings2Icon className="size-4" />

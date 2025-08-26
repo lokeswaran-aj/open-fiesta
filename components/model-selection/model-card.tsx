@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { siteConfig } from "@/lib/config";
 import type { Model } from "@/lib/types";
+import { useDialogState } from "@/stores/use-dialog-state";
 import { useModels } from "@/stores/use-models";
 import { ActionButton } from "./action-button";
 import { ModelLogo } from "./model-logo";
@@ -22,6 +23,7 @@ export const ModelCard = ({ model }: Props) => {
   const addSelectedModel = useModels((state) => state.addSelectedModel);
   const selectedModels = useModels((state) => state.selectedModels);
   const removeSelectedModel = useModels((state) => state.removeSelectedModel);
+  const { openConfigDialogFromModelSelector } = useDialogState();
 
   useEffect(() => {
     const checkTruncation = () => {
@@ -97,20 +99,20 @@ export const ModelCard = ({ model }: Props) => {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="w-6 h-6 rounded-full p-0 flex items-center justify-center border-none cursor-default"
+                  className="w-6 h-6 rounded-full p-0 flex items-center justify-center border-none cursor-pointer"
                   style={{
                     backgroundColor: "#6b7280",
                     color: "white",
                     border: "none",
                     pointerEvents: "auto",
                   }}
-                  onClick={(e) => e.preventDefault()}
+                  onClick={openConfigDialogFromModelSelector}
                 >
                   <Key className="size-3" strokeWidth={3.5} />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>BYOK(WIP)</p>
+                <p>BYOK</p>
               </TooltipContent>
             </Tooltip>
           )}
