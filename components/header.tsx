@@ -12,7 +12,7 @@ export const Header = () => {
       <Link href="/">
         <div className="flex items-center gap-2 px-4">
           <Icons.logo className="size-6" />
-          <span className="text-lg font-bold">Open Fiesta</span>
+          <span className="sm:block hidden text-lg font-bold">Open Fiesta</span>
         </div>
       </Link>
       <div className="flex items-center gap-2 px-4">
