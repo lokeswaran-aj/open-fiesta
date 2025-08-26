@@ -15,6 +15,7 @@ With Open Fiesta, you can:
 - [x] Modern chat interface with **real-time AI streaming**
 - [x] **Multi-model chat**: talk to ChatGPT, Claude, Gemini, Grok, etc. in parallel
 - [x] **Authentication** with Better Auth
+- [x] **API Key Management** for AIMLAPI, OpenRouter, and Vercel AI Gateway
 - [ ] Persistent **chat history in Postgres**
 - [ ] **Local-first storage** with IndexedDB for quick access to recent chats
 - [ ] (Future) Shareable chats / export as Markdown or PDF
