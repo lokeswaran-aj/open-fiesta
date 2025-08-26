@@ -2,13 +2,14 @@
 
 import type { Model } from "@/lib/types";
 
-export const fetchModels = async (
-  gateway: string = "openrouter",
-): Promise<{ models: Model[]; error?: string }> => {
+export const fetchModels = async (): Promise<{
+  models: Model[];
+  error?: string;
+}> => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/models?gateway=${gateway}`, {
-      next: { revalidate: 3600 },
+    const res = await fetch(`${baseUrl}/api/models`, {
+      next: { revalidate: 1 },
     });
 
     const data = await res.json();
