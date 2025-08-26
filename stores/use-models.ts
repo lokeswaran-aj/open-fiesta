@@ -42,7 +42,7 @@ export const useModels = create<ModelStore>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
-          state.isLoading = true;
+          state.isLoading = false;
         }
       },
     },
