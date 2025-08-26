@@ -1,4 +1,4 @@
-import { Settings } from "lucide-react";
+import { Settings2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,16 +17,16 @@ export const ModelSelector = () => {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          <Settings className="size-4" />
+          <Settings2Icon className="size-4" />
           Manage Models
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-6xl h-[90dvh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>Select Models</DialogTitle>
+          <DialogTitle>Pick Your Model Squad</DialogTitle>
           <DialogDescription>
-            Select between 1 to {siteConfig.maxModels} models for your
-            conversation.
+            Choose between 1 and {siteConfig.maxModels} models to vibe with in
+            your convo.
           </DialogDescription>
         </DialogHeader>
         <SelectedModel />

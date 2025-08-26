@@ -90,7 +90,7 @@ export const ChatInput = (props: ChatInputProps) => {
         </div>
       )}
 
-      <PromptInputTextarea placeholder="Ask me anything..." autoFocus />
+      <PromptInputTextarea placeholder="Spill the tea..." autoFocus />
 
       <PromptInputActions className="flex items-center justify-between gap-2 pt-2">
         <PromptInputAction tooltip="Attach files">

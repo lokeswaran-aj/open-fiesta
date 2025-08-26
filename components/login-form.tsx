@@ -59,7 +59,8 @@ export function LoginForm(props: LoginFormProps) {
           </h1>
         </div>
         <p className="text-muted-foreground">
-          This is the last click before the fun part - Pinky promise!
+          One more click and you&apos;re in the party. Let&apos;s get this
+          bread! 🥖✨
         </p>
         {error && <p className="text-red-500 text-sm">{error}</p>}
         {isLoading ? (

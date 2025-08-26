@@ -1,4 +1,4 @@
-import { Settings2Icon } from "lucide-react";
+import { KeyRound } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -50,7 +50,7 @@ export const ConfigDialog = () => {
       <form>
         <DialogTrigger asChild>
           <Button variant="outline" size="sm">
-            <Settings2Icon className="w-4 h-4" />
+            <KeyRound className="w-4 h-4" />
             Config API Key
           </Button>
         </DialogTrigger>
@@ -59,10 +59,10 @@ export const ConfigDialog = () => {
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <DialogHeader>
-            <DialogTitle>Config API Key</DialogTitle>
+            <DialogTitle>Plug In Your API Keys 🔑</DialogTitle>
             <DialogDescription>
-              Enter your API key to use the app. These keys are stored in the
-              browser&apos;s local storage.
+              Drop your API keys here to unlock the vibes. We&apos;ll keep them
+              safe in your browser&apos;s local storage.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
