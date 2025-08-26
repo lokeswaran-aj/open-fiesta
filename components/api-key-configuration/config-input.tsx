@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
+import { InputWithClear } from "@/components/ui/input-with-clear";
 import { Label } from "@/components/ui/label";
 
 type Props = {
@@ -12,17 +12,20 @@ type Props = {
   appTitle: string;
   getApiKeyHref: string;
   defaultValue: string;
+  onChange: (value: string) => void;
 };
 
-export const ConfigInput = ({
-  id,
-  name,
-  placeholder,
-  appHref,
-  appTitle,
-  getApiKeyHref,
-  defaultValue,
-}: Props) => {
+export const ConfigInput = (props: Props) => {
+  const {
+    id,
+    name,
+    placeholder,
+    appHref,
+    appTitle,
+    getApiKeyHref,
+    defaultValue,
+    onChange,
+  } = props;
   return (
     <div className="grid gap-3">
       <div className="flex items-end justify-between">
@@ -46,11 +49,17 @@ export const ConfigInput = ({
           <ArrowUpRight className="w-4 h-4" />
         </a>
       </div>
-      <Input
+      <InputWithClear
         id={id}
         name={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+        onClear={() => {
+          onChange("");
+        }}
       />
     </div>
   );
