@@ -9,14 +9,14 @@ initializeOTEL();
 
 type ChatRequest = {
   messages: UIMessage[];
-  model: string;
+  fullModelId: string;
   userId: string;
   isFree: boolean;
   apikey?: string;
 };
 
 export async function POST(req: Request) {
-  const { messages, model, userId, apikey, isFree }: ChatRequest =
+  const { messages, fullModelId, userId, apikey, isFree }: ChatRequest =
     await req.json();
 
   if (!isFree && !apikey?.trim().length) {
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   }
 
   const modelMessages = convertToModelMessages(messages);
-  const [gateway, modelId] = model.split(":");
+  const [gateway, modelId] = fullModelId.split(":");
 
   if (!gateway || !modelId) {
     return new Response("Invalid model", { status: 400 });
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       modelMessages,
       apikey,
     ),
-    providerOptions: getProviderOptions(model),
+    providerOptions: getProviderOptions(modelId),
     onError: (error) => {
       console.dir(error, { depth: null });
     },
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     experimental_telemetry: {
       isEnabled: true,
       metadata: {
-        ls_run_name: model,
+        ls_run_name: fullModelId,
         user_id: userId,
         environment: process.env.NODE_ENV,
       },
