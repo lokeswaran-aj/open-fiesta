@@ -1,6 +1,6 @@
 {
-  "id": "f8743f9d-b4bf-49bd-afe1-b50e8c304049",
-  "prevId": "0b36a24f-6041-4abf-82f8-ffc95ef3b026",
+  "id": "1f375361-6014-455d-858c-6025be34cbbd",
+  "prevId": "b11b8966-d091-462f-a085-eadfb59de0bb",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -10,7 +10,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
@@ -28,7 +28,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -117,12 +117,11 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "default": "'0198e6ff-01ed-752b-820a-3f3c4e7fba4e'"
+          "notNull": true
         },
         "user_id": {
           "name": "user_id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -176,8 +175,7 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "default": "'0198e6ff-01ed-752b-820a-40f62f8da266'"
+          "notNull": true
         },
         "chat_id": {
           "name": "chat_id",
@@ -190,6 +188,13 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
         },
         "created_at": {
           "name": "created_at",
@@ -234,8 +239,7 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "default": "'0198e6ff-01ed-752b-820a-46478159e0f3'"
+          "notNull": true
         },
         "conversation_id": {
           "name": "conversation_id",
@@ -296,7 +300,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
@@ -338,7 +342,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         }
@@ -379,7 +383,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
@@ -442,7 +446,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
