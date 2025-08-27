@@ -48,7 +48,8 @@ export const ChatInput = (props: ChatInputProps) => {
     }
   };
 
-  const isInputValid = input.trim() && selectedModels.length > 0 && !isLoading;
+  const isInputValid =
+    input.trim() && selectedModels.length > 0 && !isLoading && data?.user;
 
   const handleSubmit = () => {
     if (!data) {
