@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowUp, Paperclip, Square, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import {
   PromptInput,
@@ -23,7 +22,6 @@ type ChatInputProps = {
 export const ChatInput = (props: ChatInputProps) => {
   const { input, setInput, handleSubmit } = props;
   const { data } = authClient.useSession();
-  const router = useRouter();
 
   const isLoading = useInput((state) => state.isLoading);
   const setShouldStop = useInput((state) => state.setShouldStop);
@@ -50,10 +48,6 @@ export const ChatInput = (props: ChatInputProps) => {
     input.trim() && selectedModels.length > 0 && !isLoading && data?.user;
 
   const onSubmit = () => {
-    if (!data) {
-      return router.push("/auth");
-    }
-
     if (!isInputValid) return;
 
     handleSubmit();

@@ -2,8 +2,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { v7 as uuidv7 } from "uuid";
+import { createChat } from "@/actions/chat";
 import { ChatInput } from "@/components/chat-input";
 import { MultiConversation } from "@/components/multi-conversation";
+import { authClient } from "@/lib/auth-client";
 import { useConversationIds } from "@/stores/use-conversation-ids";
 import { useInitialPrompt } from "@/stores/use-initial-prompt";
 import { useModels } from "@/stores/use-models";
@@ -20,10 +22,16 @@ export default function Home() {
     (state) => state.clearConversationIds,
   );
   const chatId = uuidv7();
-  const handleSubmit = () => {
+  const userId = authClient.useSession().data?.user.id;
+  const handleSubmit = async () => {
+    if (!userId) {
+      return router.push("/auth");
+    }
     selectedModels.forEach((model) => {
       createConversationId(model.id);
     });
+
+    await createChat(chatId, userId);
     router.push(`/c/${chatId}`);
   };
 
