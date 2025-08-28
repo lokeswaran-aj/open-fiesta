@@ -1,7 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useEffect, useState } from "react";
-import { authClient } from "@/lib/auth-client";
 import type { Model } from "@/lib/types";
 import { useApiKey } from "@/stores/use-api-key";
 import { useInput } from "@/stores/use-input";
@@ -23,7 +22,7 @@ export const useConversation = (
   const removeStreamedModelId = useInput(
     (state) => state.removeStreamedModelId,
   );
-  const { data } = authClient.useSession();
+
   const [apiKey, setApiKey] = useState({
     openrouter: openRouterApiKey,
     vercel: vercelApiKey,
@@ -44,7 +43,6 @@ export const useConversation = (
       body: {
         chatId,
         fullModelId: model.id,
-        userId: data?.user?.id,
         isFree: model.isFree,
         apikey: apiKey[model.gateway as keyof typeof apiKey],
       },

@@ -1,6 +1,8 @@
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { initializeOTEL } from "langsmith/experimental/otel/setup";
-import { getChat } from "@/db/chat";
+import { getChat } from "@/actions/chat";
+import { saveMessage } from "@/actions/messages";
+import { auth } from "@/lib/auth";
 import type { Gateway } from "@/lib/types";
 import { prepareModelAndMessages } from "./prepare-model-and-messages";
 import { getProviderOptions } from "./providerOptions";
@@ -13,7 +15,6 @@ type ChatRequest = {
   chatId: string;
   messages: UIMessage[];
   fullModelId: string;
-  userId: string;
   isFree: boolean;
   apikey?: string;
 };
@@ -22,15 +23,23 @@ export async function POST(req: Request) {
   try {
     const {
       id: conversationId,
-      chatId,
       messages,
+      chatId,
       fullModelId,
-      userId,
-      apikey,
       isFree,
+      apikey,
     }: ChatRequest = await req.json();
 
-    console.log(chatId, conversationId);
+    const session = await auth.api.getSession({
+      headers: req.headers,
+    });
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    console.log(userId, chatId, conversationId);
 
     if (!isFree && !apikey?.trim().length) {
       return new Response("API key is required", { status: 403 });
@@ -48,6 +57,7 @@ export async function POST(req: Request) {
       return new Response("Chat not found", { status: 404 });
     }
 
+    await saveMessage(conversationId, "user", messages.at(-1)?.parts ?? []);
     const modelMessages = convertToModelMessages(messages);
 
     const result = streamText({
@@ -69,6 +79,13 @@ export async function POST(req: Request) {
           user_id: userId,
           environment: process.env.NODE_ENV,
         },
+      },
+      onFinish: async (completion) => {
+        await saveMessage(
+          conversationId,
+          "assistant",
+          completion.content as UIMessage["parts"],
+        );
       },
     });
 
