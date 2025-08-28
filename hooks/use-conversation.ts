@@ -1,4 +1,5 @@
 import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import type { Model } from "@/lib/types";
@@ -38,6 +39,16 @@ export const useConversation = (
   }, [openRouterApiKey, vercelApiKey, aimlApiKey]);
 
   const { messages, sendMessage, stop, status, error } = useChat({
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+      body: {
+        chatId,
+        fullModelId: model.id,
+        userId: data?.user?.id,
+        isFree: model.isFree,
+        apikey: apiKey[model.gateway as keyof typeof apiKey],
+      },
+    }),
     id: conversationId,
     onFinish: () => {
       removeStreamedModelId(model.id);
@@ -51,34 +62,18 @@ export const useConversation = (
   useEffect(() => {
     if (shouldSubmit) {
       setStreamingModelId(model.id);
-      sendMessage(
-        {
-          text: input,
-        },
-        {
-          body: {
-            chatId,
-            fullModelId: model.id,
-            userId: data?.user?.id,
-            isFree: model.isFree,
-            apikey: apiKey[model.gateway as keyof typeof apiKey],
-          },
-        },
-      );
+      sendMessage({
+        text: input,
+      });
       setShouldSubmit(false);
     }
   }, [
-    input,
-    chatId,
-    shouldSubmit,
     model.id,
-    model.gateway,
-    model.isFree,
+    input,
+    shouldSubmit,
     sendMessage,
     setShouldSubmit,
     setStreamingModelId,
-    data?.user?.id,
-    apiKey[model.gateway as keyof typeof apiKey],
   ]);
 
   useEffect(() => {
