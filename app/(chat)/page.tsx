@@ -1,17 +1,46 @@
 "use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { v7 as uuidv7 } from "uuid";
 import { ChatInput } from "@/components/chat-input";
 import { MultiConversation } from "@/components/multi-conversation";
+import { useConversationIds } from "@/stores/use-conversation-ids";
 import { useInitialPrompt } from "@/stores/use-initial-prompt";
+import { useModels } from "@/stores/use-models";
 
 export default function Home() {
+  const router = useRouter();
   const initialPrompt = useInitialPrompt((state) => state.initialPrompt);
   const setInitialPrompt = useInitialPrompt((state) => state.setInitialPrompt);
+  const selectedModels = useModels((state) => state.selectedModels);
+  const createConversationId = useConversationIds(
+    (state) => state.createConversationId,
+  );
+  const clearConversationIds = useConversationIds(
+    (state) => state.clearConversationIds,
+  );
+  const chatId = uuidv7();
+  const handleSubmit = () => {
+    selectedModels.forEach((model) => {
+      createConversationId(model.id);
+    });
+    router.push(`/c/${chatId}`);
+  };
+
+  useEffect(() => {
+    clearConversationIds();
+  }, [clearConversationIds]);
+
   return (
     <main className="flex flex-col h-full max-h-full overflow-hidden">
       <div className="flex-1 overflow-hidden">
-        <MultiConversation />
+        <MultiConversation chatId={chatId} />
       </div>
-      <ChatInput input={initialPrompt} setInput={setInitialPrompt} />
+      <ChatInput
+        input={initialPrompt}
+        setInput={setInitialPrompt}
+        handleSubmit={handleSubmit}
+      />
     </main>
   );
 }

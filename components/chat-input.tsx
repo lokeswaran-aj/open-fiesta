@@ -1,9 +1,8 @@
 "use client";
 
 import { ArrowUp, Paperclip, Square, X } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { v7 as uuidv7 } from "uuid";
 import {
   PromptInput,
   PromptInputAction,
@@ -18,16 +17,15 @@ import { useModels } from "@/stores/use-models";
 type ChatInputProps = {
   input: string;
   setInput: (input: string) => void;
+  handleSubmit: () => void;
 };
 
 export const ChatInput = (props: ChatInputProps) => {
-  const { input, setInput } = props;
+  const { input, setInput, handleSubmit } = props;
   const { data } = authClient.useSession();
-  const pathname = usePathname();
   const router = useRouter();
 
   const isLoading = useInput((state) => state.isLoading);
-  const setShouldSubmit = useInput((state) => state.setShouldSubmit);
   const setShouldStop = useInput((state) => state.setShouldStop);
   const selectedModels = useModels((state) => state.selectedModels);
 
@@ -51,15 +49,14 @@ export const ChatInput = (props: ChatInputProps) => {
   const isInputValid =
     input.trim() && selectedModels.length > 0 && !isLoading && data?.user;
 
-  const handleSubmit = () => {
+  const onSubmit = () => {
     if (!data) {
       return router.push("/auth");
     }
 
     if (!isInputValid) return;
 
-    if (pathname === "/") router.push(`/c/${uuidv7()}`);
-    else if (pathname.includes("/c/")) setShouldSubmit(true);
+    handleSubmit();
   };
 
   return (
@@ -68,7 +65,7 @@ export const ChatInput = (props: ChatInputProps) => {
         value={input}
         onValueChange={setInput}
         isLoading={isLoading}
-        onSubmit={handleSubmit}
+        onSubmit={onSubmit}
         className="w-full max-w-(--breakpoint-md) bg-input"
       >
         {files.length > 0 && (
@@ -130,7 +127,7 @@ export const ChatInput = (props: ChatInputProps) => {
                 size="icon"
                 className="h-8 w-8 rounded-full"
                 disabled={!isInputValid}
-                onClick={handleSubmit}
+                onClick={onSubmit}
               >
                 <ArrowUp className="size-5" />
               </Button>

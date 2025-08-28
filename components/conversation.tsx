@@ -8,18 +8,34 @@ import {
 import { UserMessage } from "@/components/user-message";
 import { useConversation } from "@/hooks/use-conversation";
 import type { Model } from "@/lib/types";
+import { useConversationIds } from "@/stores/use-conversation-ids";
 import { ErrorMessage } from "./error-message";
 import { LoadingMessage } from "./loading-message";
 import { ModelLogo } from "./model-selection/model-logo";
 
 type Props = {
   model: Model;
+  chatId: string;
 };
 
 export const Conversation = (props: Props) => {
-  const { model } = props;
+  const { model, chatId } = props;
 
-  const { messages, status, error } = useConversation(model);
+  const getConversationId = useConversationIds(
+    (state) => state.getConversationId,
+  );
+  const conversationId = getConversationId(model.id);
+
+  if (!conversationId) {
+    return null;
+  }
+
+  // biome-ignore lint/correctness/useHookAtTopLevel: Ensure the conversationId is defined
+  const { messages, status, error } = useConversation(
+    model,
+    chatId,
+    conversationId,
+  );
 
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">

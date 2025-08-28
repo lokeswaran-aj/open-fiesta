@@ -5,7 +5,12 @@ import { useModels } from "@/stores/use-models";
 import { Conversation } from "./conversation";
 import { Button } from "./ui/button";
 
-export const MultiConversation = () => {
+type Props = {
+  chatId: string;
+};
+
+export const MultiConversation = (props: Props) => {
+  const { chatId } = props;
   const selectedModels = useModels((state) => state.selectedModels);
   const setModelSelectorOpen = useDialogState(
     (state) => state.setModelSelectorOpen,
@@ -37,7 +42,7 @@ export const MultiConversation = () => {
           key={model.id}
           className="flex-shrink-0 border-r border-gray-300 dark:border-gray-700 w-[400px] min-w-[400px] max-sm:w-full max-sm:min-w-full"
         >
-          <Conversation model={model} />
+          <Conversation model={model} chatId={chatId} />
         </div>
       ))}
     </div>

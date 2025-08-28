@@ -5,7 +5,11 @@ import type { Model } from "@/lib/types";
 import { useApiKey } from "@/stores/use-api-key";
 import { useInput } from "@/stores/use-input";
 
-export const useConversation = (model: Model) => {
+export const useConversation = (
+  model: Model,
+  chatId: string,
+  conversationId: string,
+) => {
   const input = useInput((state) => state.input);
   const aimlApiKey = useApiKey((state) => state.aimlApiKey);
   const openRouterApiKey = useApiKey((state) => state.openRouterApiKey);
@@ -34,7 +38,7 @@ export const useConversation = (model: Model) => {
   }, [openRouterApiKey, vercelApiKey, aimlApiKey]);
 
   const { messages, sendMessage, stop, status, error } = useChat({
-    id: `${model.id}-conversation`,
+    id: conversationId,
     onFinish: () => {
       removeStreamedModelId(model.id);
     },
@@ -53,7 +57,8 @@ export const useConversation = (model: Model) => {
         },
         {
           body: {
-            model: model.id,
+            chatId,
+            fullModelId: model.id,
             userId: data?.user?.id,
             isFree: model.isFree,
             apikey: apiKey[model.gateway as keyof typeof apiKey],
@@ -64,6 +69,7 @@ export const useConversation = (model: Model) => {
     }
   }, [
     input,
+    chatId,
     shouldSubmit,
     model.id,
     model.gateway,
