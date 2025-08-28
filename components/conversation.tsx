@@ -1,17 +1,9 @@
 "use client";
 
-import { AiMessage } from "@/components/ai-message";
-import {
-  ChatContainerContent,
-  ChatContainerRoot,
-} from "@/components/prompt-kit/chat-container";
-import { UserMessage } from "@/components/user-message";
-import { useConversation } from "@/hooks/use-conversation";
 import type { Model } from "@/lib/types";
 import { useConversationIds } from "@/stores/use-conversation-ids";
-import { ErrorMessage } from "./error-message";
-import { LoadingMessage } from "./loading-message";
 import { ModelLogo } from "./model-selection/model-logo";
+import { Thread } from "./thread";
 
 type Props = {
   model: Model;
@@ -26,17 +18,6 @@ export const Conversation = (props: Props) => {
   );
   const conversationId = getConversationId(model.id);
 
-  if (!conversationId) {
-    return null;
-  }
-
-  // biome-ignore lint/correctness/useHookAtTopLevel: Ensure the conversationId is defined
-  const { messages, status, error } = useConversation(
-    model,
-    chatId,
-    conversationId,
-  );
-
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
       <div className="p-3 border-b border-gray-300 dark:border-gray-700">
@@ -45,35 +26,9 @@ export const Conversation = (props: Props) => {
           <h3 className="font-medium text-sm">{model.name}</h3>
         </div>
       </div>
-      <ChatContainerRoot className="flex-1">
-        <ChatContainerContent className="space-y-4 p-4 max-w-[800px] mx-auto w-full">
-          {messages.map((message, index) => {
-            const isAssistant = message.role === "assistant";
-
-            return isAssistant ? (
-              <AiMessage
-                key={message.id}
-                provider={model.provider}
-                message={message}
-                isStreaming={
-                  status === "streaming" && index === messages.length - 1
-                }
-              />
-            ) : (
-              <UserMessage key={message.id} message={message} />
-            );
-          })}
-          {status === "submitted" && (
-            <LoadingMessage provider={model.provider} />
-          )}
-          {error && (
-            <ErrorMessage
-              provider={model.provider}
-              errorMessage={error.message}
-            />
-          )}
-        </ChatContainerContent>
-      </ChatContainerRoot>
+      {conversationId && (
+        <Thread model={model} chatId={chatId} conversationId={conversationId} />
+      )}
     </div>
   );
 };
