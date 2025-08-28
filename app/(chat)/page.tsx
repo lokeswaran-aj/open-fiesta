@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { v7 as uuidv7 } from "uuid";
 import { createChat } from "@/actions/chat";
+import { createConversation } from "@/actions/conversation";
 import { ChatInput } from "@/components/chat-input";
 import { MultiConversation } from "@/components/multi-conversation";
 import { authClient } from "@/lib/auth-client";
@@ -18,6 +19,7 @@ export default function Home() {
   const createConversationId = useConversationIds(
     (state) => state.createConversationId,
   );
+  const conversationIds = useConversationIds((state) => state.conversationIds);
   const clearConversationIds = useConversationIds(
     (state) => state.clearConversationIds,
   );
@@ -27,11 +29,19 @@ export default function Home() {
     if (!userId) {
       return router.push("/auth");
     }
-    selectedModels.forEach((model) => {
-      createConversationId(model.id);
+
+    const newConversations = selectedModels.map((model) => {
+      const conversationId = createConversationId(model.id);
+      return {
+        id: conversationId,
+        chatId,
+        modelId: model.id,
+      };
     });
 
     await createChat(chatId, userId);
+    await createConversation(newConversations);
+
     router.push(`/c/${chatId}`);
   };
 
