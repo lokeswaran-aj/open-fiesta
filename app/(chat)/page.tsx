@@ -1,6 +1,5 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { v7 as uuidv7 } from "uuid";
 import { createChat } from "@/actions/chat";
 import { createConversation } from "@/actions/conversation";
@@ -18,10 +17,6 @@ export default function Home() {
   const selectedModels = useModels((state) => state.selectedModels);
   const createConversationId = useConversationIds(
     (state) => state.createConversationId,
-  );
-  const conversationIds = useConversationIds((state) => state.conversationIds);
-  const clearConversationIds = useConversationIds(
-    (state) => state.clearConversationIds,
   );
   const chatId = uuidv7();
   const userId = authClient.useSession().data?.user.id;
@@ -44,10 +39,6 @@ export default function Home() {
 
     router.push(`/c/${chatId}`);
   };
-
-  useEffect(() => {
-    clearConversationIds();
-  }, [clearConversationIds]);
 
   return (
     <main className="flex flex-col h-full max-h-full overflow-hidden">

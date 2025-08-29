@@ -6,6 +6,7 @@ type ModelStore = {
   models: Model[];
   setModels: (models: Model[]) => void;
   selectedModels: Model[];
+  setSelectedModels: (models: Model[]) => void;
   addSelectedModel: (model: Model) => void;
   removeSelectedModel: (model: Model) => void;
   reorderSelectedModels: (fromIndex: number, toIndex: number) => void;
@@ -19,6 +20,7 @@ export const useModels = create<ModelStore>()(
       models: [],
       setModels: (models: Model[]) => set({ models }),
       selectedModels: [],
+      setSelectedModels: (models: Model[]) => set({ selectedModels: models }),
       addSelectedModel: (model: Model) =>
         set((state) => ({ selectedModels: [...state.selectedModels, model] })),
       removeSelectedModel: (model: Model) =>

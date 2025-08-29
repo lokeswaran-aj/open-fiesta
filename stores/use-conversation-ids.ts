@@ -4,7 +4,10 @@ import { persist } from "zustand/middleware";
 
 type ConversationIdsStore = {
   conversationIds: Record<string, string>;
-  setConversationIds: (modelId: string, conversationId: string) => void;
+  setConversationIds: (
+    conversations: Array<{ modelId: string; conversationId: string }>,
+  ) => void;
+  addConversationId: (modelId: string, conversationId: string) => void;
   getConversationId: (modelId: string) => string | undefined;
   createConversationId: (modelId: string) => string;
   removeConversationId: (modelId: string) => void;
@@ -15,7 +18,18 @@ export const useConversationIds = create<ConversationIdsStore>()(
   persist(
     (set, get) => ({
       conversationIds: {},
-      setConversationIds: (modelId: string, conversationId: string) =>
+      setConversationIds: (
+        conversations: Array<{ modelId: string; conversationId: string }>,
+      ) =>
+        set({
+          conversationIds: Object.fromEntries(
+            conversations.map(({ modelId, conversationId }) => [
+              modelId,
+              conversationId,
+            ]),
+          ),
+        }),
+      addConversationId: (modelId: string, conversationId: string) =>
         set((state) => ({
           conversationIds: {
             ...state.conversationIds,
@@ -25,7 +39,7 @@ export const useConversationIds = create<ConversationIdsStore>()(
       getConversationId: (modelId: string) => get().conversationIds[modelId],
       createConversationId: (modelId: string) => {
         const conversationId = uuidv7();
-        get().setConversationIds(modelId, conversationId);
+        get().addConversationId(modelId, conversationId);
         return conversationId;
       },
       removeConversationId: (modelId: string) =>
