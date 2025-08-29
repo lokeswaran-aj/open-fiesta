@@ -1,5 +1,5 @@
 {
-  "id": "1f375361-6014-455d-858c-6025be34cbbd",
+  "id": "3dd6f0ed-df35-41f3-bd3c-bac943bb53ad",
   "prevId": "b11b8966-d091-462f-a085-eadfb59de0bb",
   "version": "7",
   "dialect": "postgresql",
@@ -183,9 +183,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "model_id": {
-          "name": "model_id",
-          "type": "varchar",
+        "model": {
+          "name": "model",
+          "type": "json",
           "primaryKey": false,
           "notNull": true
         },

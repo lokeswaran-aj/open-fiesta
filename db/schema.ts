@@ -8,6 +8,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { v7 as uuidv7 } from "uuid";
+import type { Model } from "@/lib/types";
 
 export const user = pgTable("user", {
   id: uuid("id")
@@ -102,7 +103,7 @@ export const conversation = pgTable("conversation", {
   chatId: uuid("chat_id")
     .notNull()
     .references(() => chat.id, { onDelete: "cascade" }),
-  modelId: varchar("model_id").notNull(),
+  model: json("model").$type<Model>().notNull(),
   active: boolean("active").notNull().default(true),
   createdAt: timestamp("created_at")
     .$defaultFn(() => new Date())

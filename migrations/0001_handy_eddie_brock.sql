@@ -9,7 +9,7 @@ CREATE TABLE "chat" (
 CREATE TABLE "conversation" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"chat_id" uuid NOT NULL,
-	"model_id" varchar NOT NULL,
+	"model" json NOT NULL,
 	"active" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL
