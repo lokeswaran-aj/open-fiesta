@@ -134,4 +134,7 @@ export const schema = {
   session,
   account,
   verification,
+  chat,
+  conversation,
+  message,
 };
