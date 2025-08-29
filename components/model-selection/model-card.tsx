@@ -1,4 +1,5 @@
 import { Key } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,7 @@ type Props = {
 
 export const ModelCard = ({ model }: Props) => {
   const [isTextTruncated, setIsTextTruncated] = useState(false);
+  const { id } = useParams();
   const textRef = useRef<HTMLSpanElement>(null);
   const addSelectedModel = useModels((state) => state.addSelectedModel);
   const selectedModels = useModels((state) => state.selectedModels);
@@ -44,10 +46,12 @@ export const ModelCard = ({ model }: Props) => {
   }, []);
 
   const handleAddModel = () => {
+    console.log("adding model", id);
     addSelectedModel(model);
   };
 
   const handleRemoveModel = () => {
+    console.log("removing model", id);
     removeSelectedModel(model);
   };
 

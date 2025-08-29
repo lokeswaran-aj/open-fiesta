@@ -30,7 +30,7 @@ export default function Home() {
       return {
         id: conversationId,
         chatId,
-        modelId: model.id,
+        model,
       };
     });
 
