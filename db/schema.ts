@@ -138,3 +138,7 @@ export const schema = {
   conversation,
   message,
 };
+
+export type ChatType = typeof chat.$inferSelect;
+export type ConversationType = typeof conversation.$inferSelect;
+export type MessageType = typeof message.$inferSelect;

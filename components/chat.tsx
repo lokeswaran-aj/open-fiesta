@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
-import type { getChatWithConversationsWithMessages } from "@/actions/chat";
+import type { ChatWithConversationsWithMessages } from "@/actions/chat";
 import { ChatInput } from "@/components/chat-input";
 import { MultiConversation } from "@/components/multi-conversation";
 import { useConversationIds } from "@/stores/use-conversation-ids";
@@ -10,7 +10,7 @@ import { useInput } from "@/stores/use-input";
 import { useModels } from "@/stores/use-models";
 
 type Props = {
-  chat: Awaited<ReturnType<typeof getChatWithConversationsWithMessages>>;
+  chat: ChatWithConversationsWithMessages | null;
 };
 
 export const Chat = (props: Props) => {
@@ -80,7 +80,10 @@ export const Chat = (props: Props) => {
   return (
     <main className="flex flex-col h-full max-h-full overflow-hidden">
       <div className="flex-1 overflow-hidden">
-        <MultiConversation chatId={id as string} />
+        <MultiConversation
+          chatId={id as string}
+          conversations={chat?.conversations}
+        />
       </div>
       <ChatInput
         input={input}

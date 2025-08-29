@@ -1,5 +1,6 @@
 "use client";
 import { Settings2Icon } from "lucide-react";
+import type { ConversationsWithMessages } from "@/actions/chat";
 import { useDialogState } from "@/stores/use-dialog-state";
 import { useModels } from "@/stores/use-models";
 import { Conversation } from "./conversation";
@@ -7,10 +8,11 @@ import { Button } from "./ui/button";
 
 type Props = {
   chatId: string;
+  conversations?: ConversationsWithMessages[];
 };
 
 export const MultiConversation = (props: Props) => {
-  const { chatId } = props;
+  const { chatId, conversations } = props;
   const selectedModels = useModels((state) => state.selectedModels);
   const setModelSelectorOpen = useDialogState(
     (state) => state.setModelSelectorOpen,
@@ -42,7 +44,13 @@ export const MultiConversation = (props: Props) => {
           key={model.id}
           className="flex-shrink-0 border-r border-gray-300 dark:border-gray-700 w-[400px] min-w-[400px] max-sm:w-full max-sm:min-w-full"
         >
-          <Conversation model={model} chatId={chatId} />
+          <Conversation
+            model={model}
+            chatId={chatId}
+            conversation={conversations?.find(
+              (conversation) => conversation.conversation.modelId === model.id,
+            )}
+          />
         </div>
       ))}
     </div>

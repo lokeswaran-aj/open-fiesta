@@ -1,3 +1,4 @@
+import type { UIMessage } from "ai";
 import { AiMessage } from "@/components/ai-message";
 import {
   ChatContainerContent,
@@ -13,14 +14,16 @@ type Props = {
   model: Model;
   chatId: string;
   conversationId: string;
+  initialMessages: UIMessage[];
 };
 
 export const Thread = (props: Props) => {
-  const { model, chatId, conversationId } = props;
+  const { model, chatId, conversationId, initialMessages } = props;
   const { messages, status, error } = useConversation(
     model,
     chatId,
     conversationId,
+    initialMessages,
   );
   return (
     <ChatContainerRoot className="flex-1">

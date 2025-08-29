@@ -2,7 +2,14 @@
 
 import { and, eq } from "drizzle-orm";
 import db from "@/db/drizzle";
-import { chat, conversation, message } from "@/db/schema";
+import {
+  type ChatType,
+  type ConversationType,
+  chat,
+  conversation,
+  type MessageType,
+  message,
+} from "@/db/schema";
 
 export const createChat = async (id: string, userId: string) => {
   const res = await db.insert(chat).values({ id, userId }).returning();
@@ -61,4 +68,14 @@ export const getChatWithConversationsWithMessages = async (id: string) => {
     chat: chatInfo,
     conversations: Array.from(grouped.values()),
   };
+};
+
+export type ConversationsWithMessages = {
+  conversation: ConversationType;
+  messages: MessageType[];
+};
+
+export type ChatWithConversationsWithMessages = {
+  chat: ChatType;
+  conversations: ConversationsWithMessages[];
 };

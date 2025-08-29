@@ -1,5 +1,5 @@
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import { useEffect, useState } from "react";
 import type { Model } from "@/lib/types";
 import { useApiKey } from "@/stores/use-api-key";
@@ -9,6 +9,7 @@ export const useConversation = (
   model: Model,
   chatId: string,
   conversationId: string,
+  initialMessages: UIMessage[],
 ) => {
   const input = useInput((state) => state.input);
   const aimlApiKey = useApiKey((state) => state.aimlApiKey);
@@ -47,6 +48,7 @@ export const useConversation = (
         apikey: apiKey[model.gateway as keyof typeof apiKey],
       },
     }),
+    messages: initialMessages,
     id: conversationId,
     onFinish: () => {
       removeStreamedModelId(model.id);
