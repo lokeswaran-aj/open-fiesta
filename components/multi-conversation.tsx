@@ -48,7 +48,7 @@ export const MultiConversation = (props: Props) => {
             model={model}
             chatId={chatId}
             conversation={conversations?.find(
-              (conversation) => conversation.conversation.modelId === model.id,
+              (conversation) => conversation.conversation.model.id === model.id,
             )}
           />
         </div>

@@ -36,16 +36,13 @@ export const Chat = (props: Props) => {
     if (chat && models.length > 0) {
       const { conversations } = chat;
       const conversationIds = conversations.map(({ conversation }) => ({
-        modelId: conversation.modelId,
+        modelId: conversation.model.id,
         conversationId: conversation.id,
       }));
       const selectedModels = conversations
-        .map(({ conversation }) => {
-          const model = models.find(
-            (model) => model.id === conversation.modelId,
-          );
-          return model;
-        })
+        .map(({ conversation }) =>
+          models.find((model) => model.id === conversation.model.id),
+        )
         .filter(
           (model): model is NonNullable<typeof model> => model !== undefined,
         );

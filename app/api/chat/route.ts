@@ -39,8 +39,6 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    console.log(userId, chatId, conversationId);
-
     if (!isFree && !apikey?.trim().length) {
       return new Response("API key is required", { status: 403 });
     }
