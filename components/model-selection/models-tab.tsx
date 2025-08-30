@@ -7,11 +7,11 @@ export const ModelsTab = ({
 }: {
   sortedProviders: Array<{ [key: string]: unknown }>;
 }) => (
-  <Tabs defaultValue="openrouter" className="h-full flex flex-col">
+  <Tabs defaultValue="vercel" className="h-full flex flex-col">
     <TabsList className="grid w-full grid-cols-3">
-      <TabsTrigger value="openrouter">OpenRouter</TabsTrigger>
       <TabsTrigger value="vercel">Vercel</TabsTrigger>
       <TabsTrigger value="aimlapi">AIML API</TabsTrigger>
+      <TabsTrigger value="openrouter">OpenRouter</TabsTrigger>
     </TabsList>
 
     {sortedProviders.map((gatewayObj) => {
