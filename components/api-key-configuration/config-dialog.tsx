@@ -1,3 +1,5 @@
+"use client";
+
 import { KeyRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";

@@ -1,5 +1,8 @@
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { initializeOTEL } from "langsmith/experimental/otel/setup";
+import { getChat } from "@/actions/chat";
+import { saveMessage } from "@/actions/messages";
+import { auth } from "@/lib/auth";
 import type { Gateway } from "@/lib/types";
 import { prepareModelAndMessages } from "./prepare-model-and-messages";
 import { getProviderOptions } from "./providerOptions";
@@ -8,51 +11,88 @@ export const maxDuration = 60;
 initializeOTEL();
 
 type ChatRequest = {
+  id: string;
+  chatId: string;
   messages: UIMessage[];
-  model: string;
-  userId: string;
+  fullModelId: string;
   isFree: boolean;
   apikey?: string;
 };
 
 export async function POST(req: Request) {
-  const { messages, model, userId, apikey, isFree }: ChatRequest =
-    await req.json();
-
-  if (!isFree && !apikey?.trim().length) {
-    return new Response("API key is required", { status: 403 });
-  }
-
-  const modelMessages = convertToModelMessages(messages);
-  const [gateway, modelId] = model.split(":");
-
-  if (!gateway || !modelId) {
-    return new Response("Invalid model", { status: 400 });
-  }
-
-  const result = streamText({
-    ...prepareModelAndMessages(
-      modelId,
-      gateway as Gateway,
-      modelMessages,
+  try {
+    const {
+      id: conversationId,
+      messages,
+      chatId,
+      fullModelId,
+      isFree,
       apikey,
-    ),
-    providerOptions: getProviderOptions(model),
-    onError: (error) => {
-      console.dir(error, { depth: null });
-    },
+    }: ChatRequest = await req.json();
 
-    experimental_telemetry: {
-      isEnabled: true,
-      metadata: {
-        ls_run_name: model,
-        user_id: userId,
-        environment: process.env.NODE_ENV,
+    const session = await auth.api.getSession({
+      headers: req.headers,
+    });
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    if (!isFree && !apikey?.trim().length) {
+      return new Response("API key is required", { status: 403 });
+    }
+
+    const [gateway, modelId] = fullModelId.split(":");
+
+    if (!gateway || !modelId) {
+      return new Response("Invalid model", { status: 400 });
+    }
+
+    const chat = await getChat(chatId);
+
+    if (!chat || chat.userId !== userId) {
+      return new Response("Chat not found", { status: 404 });
+    }
+
+    await saveMessage(conversationId, "user", messages.at(-1)?.parts ?? []);
+    const modelMessages = convertToModelMessages(messages);
+
+    const result = streamText({
+      ...prepareModelAndMessages(
+        modelId,
+        gateway as Gateway,
+        modelMessages,
+        apikey,
+      ),
+      providerOptions: getProviderOptions(modelId),
+      onError: (error) => {
+        console.dir(error, { depth: null });
       },
-    },
-  });
 
-  return result.toUIMessageStreamResponse({
-    sendReasoning: true,
-  });
+      experimental_telemetry: {
+        isEnabled: true,
+        metadata: {
+          ls_run_name: fullModelId,
+          user_id: userId,
+          environment: process.env.NODE_ENV,
+          own_api_key: apikey ? "yes" : "no",
+        },
+      },
+      onFinish: async (completion) => {
+        await saveMessage(
+          conversationId,
+          "assistant",
+          completion.content as UIMessage["parts"],
+        );
+      },
+    });
+
+    return result.toUIMessageStreamResponse({
+      sendReasoning: true,
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response("Internal server error", { status: 500 });
+  }
 }

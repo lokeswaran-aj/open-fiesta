@@ -1,11 +1,18 @@
 "use client";
 import { Settings2Icon } from "lucide-react";
+import type { ConversationsWithMessages } from "@/actions/chat";
 import { useDialogState } from "@/stores/use-dialog-state";
 import { useModels } from "@/stores/use-models";
 import { Conversation } from "./conversation";
 import { Button } from "./ui/button";
 
-export const MultiConversation = () => {
+type Props = {
+  chatId: string;
+  conversations?: ConversationsWithMessages[];
+};
+
+export const MultiConversation = (props: Props) => {
+  const { chatId, conversations } = props;
   const selectedModels = useModels((state) => state.selectedModels);
   const setModelSelectorOpen = useDialogState(
     (state) => state.setModelSelectorOpen,
@@ -13,8 +20,14 @@ export const MultiConversation = () => {
   const handleOpenModelSelector = () => {
     setModelSelectorOpen(true);
   };
+  const isLoading = useModels((state) => state.isLoading);
+
+  if (isLoading) {
+    return null;
+  }
+
   return (
-    <div className="flex h-full overflow-x-auto border-b border-gray-300 dark:border-gray-700">
+    <div className="flex h-full overflow-x-auto">
       {selectedModels.length === 0 && (
         <div className="flex-1 flex flex-col items-center justify-center gap-4">
           <p className="text-gray-500 dark:text-gray-400">
@@ -31,7 +44,13 @@ export const MultiConversation = () => {
           key={model.id}
           className="flex-shrink-0 border-r border-gray-300 dark:border-gray-700 w-[400px] min-w-[400px] max-sm:w-full max-sm:min-w-full"
         >
-          <Conversation model={model} />
+          <Conversation
+            model={model}
+            chatId={chatId}
+            conversation={conversations?.find(
+              (conversation) => conversation.conversation.model.id === model.id,
+            )}
+          />
         </div>
       ))}
     </div>

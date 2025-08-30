@@ -1,25 +1,19 @@
 "use client";
 
-import { AiMessage } from "@/components/ai-message";
-import {
-  ChatContainerContent,
-  ChatContainerRoot,
-} from "@/components/prompt-kit/chat-container";
-import { UserMessage } from "@/components/user-message";
-import { useConversation } from "@/hooks/use-conversation";
+import type { UIMessage } from "ai";
+import type { ConversationsWithMessages } from "@/actions/chat";
 import type { Model } from "@/lib/types";
-import { ErrorMessage } from "./error-message";
-import { LoadingMessage } from "./loading-message";
 import { ModelLogo } from "./model-selection/model-logo";
+import { Thread } from "./thread";
 
 type Props = {
   model: Model;
+  chatId: string;
+  conversation?: ConversationsWithMessages;
 };
 
 export const Conversation = (props: Props) => {
-  const { model } = props;
-
-  const { messages, status, error } = useConversation(model);
+  const { model, chatId, conversation } = props;
 
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
@@ -29,35 +23,20 @@ export const Conversation = (props: Props) => {
           <h3 className="font-medium text-sm">{model.name}</h3>
         </div>
       </div>
-      <ChatContainerRoot className="flex-1">
-        <ChatContainerContent className="space-y-4 p-4 max-w-[800px] mx-auto w-full">
-          {messages.map((message, index) => {
-            const isAssistant = message.role === "assistant";
-
-            return isAssistant ? (
-              <AiMessage
-                key={message.id}
-                provider={model.provider}
-                message={message}
-                isStreaming={
-                  status === "streaming" && index === messages.length - 1
-                }
-              />
-            ) : (
-              <UserMessage key={message.id} message={message} />
-            );
-          })}
-          {status === "submitted" && (
-            <LoadingMessage provider={model.provider} />
-          )}
-          {error && (
-            <ErrorMessage
-              provider={model.provider}
-              errorMessage={error.message}
-            />
-          )}
-        </ChatContainerContent>
-      </ChatContainerRoot>
+      {conversation && (
+        <Thread
+          model={model}
+          chatId={chatId}
+          conversationId={conversation.conversation.id}
+          initialMessages={
+            conversation.messages.map((message) => ({
+              id: message.id,
+              role: message.role as "user" | "assistant",
+              parts: message.parts,
+            })) as UIMessage[]
+          }
+        />
+      )}
     </div>
   );
 };

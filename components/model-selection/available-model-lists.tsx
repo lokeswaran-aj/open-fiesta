@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { fetchModels } from "@/actions/fetch-models";
 import { useModelSearch } from "@/hooks/use-model-search";
-import type { Model } from "@/lib/types";
+import { useModels } from "@/stores/use-models";
 import { AvailableModelHeader } from "./available-model-header";
 import { EmptyState } from "./empty-state";
 import { LoadingModelHeader } from "./loading-model-header";
@@ -11,7 +11,8 @@ import { ModelListSkeleton } from "./model-list-skeleton";
 import { ModelsTab } from "./models-tab";
 
 export const AvailableModelsList = () => {
-  const [models, setModels] = useState<Model[]>([]);
+  const models = useModels((state) => state.models);
+  const setModels = useModels((state) => state.setModels);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const {
@@ -42,7 +43,7 @@ export const AvailableModelsList = () => {
     };
 
     loadModels();
-  }, []);
+  }, [setModels]);
 
   const renderContent = () => {
     if (isLoading) {

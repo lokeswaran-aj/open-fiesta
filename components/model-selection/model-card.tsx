@@ -1,5 +1,8 @@
 import { Key } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { updateConversationStatus } from "@/actions/conversation";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -20,6 +23,8 @@ type Props = {
 
 export const ModelCard = ({ model }: Props) => {
   const [isTextTruncated, setIsTextTruncated] = useState(false);
+  const { id } = useParams();
+  const router = useRouter();
   const textRef = useRef<HTMLSpanElement>(null);
   const addSelectedModel = useModels((state) => state.addSelectedModel);
   const selectedModels = useModels((state) => state.selectedModels);
@@ -43,12 +48,32 @@ export const ModelCard = ({ model }: Props) => {
     return () => window.removeEventListener("resize", checkTruncation);
   }, []);
 
-  const handleAddModel = () => {
+  const handleAddModel = async () => {
     addSelectedModel(model);
+    try {
+      if (id) {
+        await updateConversationStatus(id as string, model, true);
+        router.refresh();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add model");
+      removeSelectedModel(model);
+    }
   };
 
-  const handleRemoveModel = () => {
+  const handleRemoveModel = async () => {
     removeSelectedModel(model);
+    try {
+      if (id) {
+        await updateConversationStatus(id as string, model, false);
+        router.refresh();
+      }
+    } catch (error) {
+      toast.error("Failed to remove model");
+      addSelectedModel(model);
+      console.error(error);
+    }
   };
 
   const isSelected = selectedModels.some((m) => m.id === model.id);

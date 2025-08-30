@@ -1,3 +1,5 @@
+"use client";
+
 import { Settings2Icon } from "lucide-react";
 import {
   Dialog,
@@ -21,7 +23,7 @@ export const ModelSelector = () => {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Settings2Icon className="size-4" />
-          <span>Pick a model</span>
+          <span className="hidden sm:block">Pick a model</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-6xl h-[90dvh] flex flex-col">

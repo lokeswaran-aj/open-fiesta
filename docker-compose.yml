@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:17
-    container_name: open-fiesta-db
+    container_name: open-fiesta-database
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-postgres}

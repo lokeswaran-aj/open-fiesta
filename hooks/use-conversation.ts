@@ -1,11 +1,16 @@
 import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import { useEffect, useState } from "react";
-import { authClient } from "@/lib/auth-client";
 import type { Model } from "@/lib/types";
 import { useApiKey } from "@/stores/use-api-key";
 import { useInput } from "@/stores/use-input";
 
-export const useConversation = (model: Model) => {
+export const useConversation = (
+  model: Model,
+  chatId: string,
+  conversationId: string,
+  initialMessages: UIMessage[],
+) => {
   const input = useInput((state) => state.input);
   const aimlApiKey = useApiKey((state) => state.aimlApiKey);
   const openRouterApiKey = useApiKey((state) => state.openRouterApiKey);
@@ -18,7 +23,7 @@ export const useConversation = (model: Model) => {
   const removeStreamedModelId = useInput(
     (state) => state.removeStreamedModelId,
   );
-  const { data } = authClient.useSession();
+
   const [apiKey, setApiKey] = useState({
     openrouter: openRouterApiKey,
     vercel: vercelApiKey,
@@ -34,7 +39,17 @@ export const useConversation = (model: Model) => {
   }, [openRouterApiKey, vercelApiKey, aimlApiKey]);
 
   const { messages, sendMessage, stop, status, error } = useChat({
-    id: `${model.id}-conversation`,
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+      body: {
+        chatId,
+        fullModelId: model.id,
+        isFree: model.isFree,
+        apikey: apiKey[model.gateway as keyof typeof apiKey],
+      },
+    }),
+    messages: initialMessages,
+    id: conversationId,
     onFinish: () => {
       removeStreamedModelId(model.id);
     },
@@ -47,32 +62,18 @@ export const useConversation = (model: Model) => {
   useEffect(() => {
     if (shouldSubmit) {
       setStreamingModelId(model.id);
-      sendMessage(
-        {
-          text: input,
-        },
-        {
-          body: {
-            model: model.id,
-            userId: data?.user?.id,
-            isFree: model.isFree,
-            apikey: apiKey[model.gateway as keyof typeof apiKey],
-          },
-        },
-      );
+      sendMessage({
+        text: input,
+      });
       setShouldSubmit(false);
     }
   }, [
+    model.id,
     input,
     shouldSubmit,
-    model.id,
-    model.gateway,
-    model.isFree,
     sendMessage,
     setShouldSubmit,
     setStreamingModelId,
-    data?.user?.id,
-    apiKey[model.gateway as keyof typeof apiKey],
   ]);
 
   useEffect(() => {
