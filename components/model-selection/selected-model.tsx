@@ -17,19 +17,20 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripHorizontal } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { updateConversationStatus } from "@/actions/conversation";
 import type { Model } from "@/lib/types";
 import { useModels } from "@/stores/use-models";
 import { ActionButton } from "./action-button";
 import { ModelLogo } from "./model-logo";
 
 // Sortable item component
-const SortableModelItem = ({
-  model,
-  removeSelectedModel,
-}: {
-  model: Model;
-  removeSelectedModel: (model: Model) => void;
-}) => {
+const SortableModelItem = ({ model }: { model: Model }) => {
+  const { id } = useParams();
+  const router = useRouter();
+  const addSelectedModel = useModels((state) => state.addSelectedModel);
+  const removeSelectedModel = useModels((state) => state.removeSelectedModel);
   const {
     attributes,
     listeners,
@@ -42,6 +43,20 @@ const SortableModelItem = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+  };
+
+  const handleRemoveModel = async () => {
+    removeSelectedModel(model);
+    try {
+      if (id) {
+        await updateConversationStatus(id as string, model, false);
+        router.refresh();
+      }
+    } catch (error) {
+      toast.error("Failed to remove model");
+      addSelectedModel(model);
+      console.error(error);
+    }
   };
 
   return (
@@ -65,7 +80,7 @@ const SortableModelItem = ({
       <ActionButton
         type="remove"
         size="sm"
-        onClick={() => removeSelectedModel(model)}
+        onClick={handleRemoveModel}
         tooltipText="Remove Model"
       />
     </div>
@@ -74,7 +89,6 @@ const SortableModelItem = ({
 
 export const SelectedModel = () => {
   const selectedModels = useModels((state) => state.selectedModels);
-  const removeSelectedModel = useModels((state) => state.removeSelectedModel);
   const reorderSelectedModels = useModels(
     (state) => state.reorderSelectedModels,
   );
@@ -117,11 +131,7 @@ export const SelectedModel = () => {
         >
           <div className="flex gap-2 overflow-x-auto pb-4">
             {selectedModels.map((model) => (
-              <SortableModelItem
-                key={model.id}
-                model={model}
-                removeSelectedModel={removeSelectedModel}
-              />
+              <SortableModelItem key={model.id} model={model} />
             ))}
           </div>
         </SortableContext>
