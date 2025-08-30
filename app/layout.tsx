@@ -30,6 +30,29 @@ export const metadata: Metadata = {
   title: siteConfig.name,
   description: siteConfig.description,
   keywords: siteConfig.keywords,
+  openGraph: {
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    locale: "en_US",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  twitter: {
+    title: siteConfig.name,
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
