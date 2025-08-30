@@ -53,6 +53,9 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     card: "summary_large_image",
   },
+  verification: {
+    google: "QtQ5Ba6sFo1CvOIf3GVn8K36CGzB2dRQx_e-LUpbbMo",
+  },
 };
 
 export default function RootLayout({
