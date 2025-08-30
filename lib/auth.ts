@@ -10,6 +10,10 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
+  session: {
+    expiresIn: 60 * 60 * 24 * 30, // 30 days
+    updateAge: 60 * 60 * 24, // 1 day
+  },
   advanced: {
     database: {
       generateId: () => uuidv7(),
