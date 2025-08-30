@@ -16,10 +16,10 @@ With Open Fiesta, you can:
 - [x] **Multi-model chat**: talk to ChatGPT, Claude, Gemini, Grok, etc. in parallel
 - [x] **Authentication** with Better Auth
 - [x] **API Key Management** for AIMLAPI, OpenRouter, and Vercel AI Gateway
-- [ ] Persistent **chat history in Postgres**
+- [x] Persistent **chat history in Postgres**
+- [ ] Chat AI model settings like temperature, top-p, frequency penalty, etc.
 - [ ] **Local-first storage** with IndexedDB for quick access to recent chats
 - [ ] (Future) Shareable chats / export as Markdown or PDF
-- [ ] (Future) Plugin / extension system for custom AI workflows
 
 ---
 
