@@ -76,6 +76,7 @@ export async function POST(req: Request) {
           ls_run_name: fullModelId,
           user_id: userId,
           environment: process.env.NODE_ENV,
+          own_api_key: apikey ? "yes" : "no",
         },
       },
       onFinish: async (completion) => {
