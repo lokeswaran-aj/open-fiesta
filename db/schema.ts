@@ -1,5 +1,6 @@
 import {
   boolean,
+  integer,
   json,
   pgTable,
   text,
@@ -130,6 +131,25 @@ export const message = pgTable("message", {
     .notNull(),
 });
 
+export const rateLimit = pgTable("rate_limit", {
+  id: uuid("id")
+    .primaryKey()
+    .$defaultFn(() => uuidv7()),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => user.id)
+    .unique(),
+  lastInputId: uuid("last_input_id").notNull(),
+  messageCount: integer("message_count").notNull().default(1),
+  resetTime: timestamp("reset_time").notNull(),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => new Date())
+    .notNull(),
+});
+
 export const schema = {
   user,
   session,
@@ -138,8 +158,10 @@ export const schema = {
   chat,
   conversation,
   message,
+  rateLimit,
 };
 
 export type ChatType = typeof chat.$inferSelect;
 export type ConversationType = typeof conversation.$inferSelect;
 export type MessageType = typeof message.$inferSelect;
+export type RateLimitType = typeof rateLimit.$inferSelect;
