@@ -79,19 +79,6 @@ export const ConfigDialog = () => {
           </DialogHeader>
           <div className="grid gap-4">
             <ConfigInput
-              id="openrouter-api-key"
-              name="openrouter-api-key"
-              placeholder="sk-or-v1-..."
-              label="OpenRouter API Key"
-              appHref="https://openrouter.ai?utm_source=open-fiesta.com"
-              appTitle="OpenRouter"
-              getApiKeyHref="https://openrouter.ai/sign-in?redirect_url=https://openrouter.ai/settings/keys&utm_source=open-fiesta.com"
-              defaultValue={openRouterApiKey}
-              onChange={(value) => {
-                setApiKey({ ...apiKey, openRouterApiKey: value });
-              }}
-            />
-            <ConfigInput
               id="vercel-ai-gateway-api-key"
               name="vercel-ai-gateway-api-key"
               placeholder="vck_..."
@@ -102,6 +89,19 @@ export const ConfigDialog = () => {
               defaultValue={apiKey.vercelApiKey}
               onChange={(value) => {
                 setApiKey({ ...apiKey, vercelApiKey: value });
+              }}
+            />
+            <ConfigInput
+              id="openrouter-api-key"
+              name="openrouter-api-key"
+              placeholder="sk-or-v1-..."
+              label="OpenRouter API Key"
+              appHref="https://openrouter.ai?utm_source=open-fiesta.com"
+              appTitle="OpenRouter"
+              getApiKeyHref="https://openrouter.ai/sign-in?redirect_url=https://openrouter.ai/settings/keys&utm_source=open-fiesta.com"
+              defaultValue={openRouterApiKey}
+              onChange={(value) => {
+                setApiKey({ ...apiKey, openRouterApiKey: value });
               }}
             />
             {/* <ConfigInput
