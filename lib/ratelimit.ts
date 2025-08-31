@@ -4,23 +4,23 @@ import {
   resetRateLimit,
   updateRateLimit,
 } from "@/actions/ratelimit";
-import { CONSTANTS } from "@/lib/constant";
+import { CONSTANTS } from "./constant";
 
 export const handleRateLimit = async (userId: string, inputId: string) => {
   const resetResult = await resetRateLimit(userId, inputId);
   if (resetResult) {
-    console.log("reset result");
     return {
       allowed: true,
       messageCount: resetResult.messageCount,
+      resetTime: resetResult.resetTime,
     };
   }
   const updateResult = await updateRateLimit(inputId, userId);
   if (updateResult) {
-    console.log("update result");
     return {
       allowed: true,
       messageCount: updateResult.messageCount,
+      resetTime: updateResult.resetTime,
     };
   }
 
@@ -28,30 +28,30 @@ export const handleRateLimit = async (userId: string, inputId: string) => {
 
   if (existingRateLimit) {
     if (existingRateLimit.lastInputId === inputId) {
-      console.log("existing rate limit allowed (same input)");
       return {
         allowed: true,
         messageCount: existingRateLimit.messageCount,
+        resetTime: existingRateLimit.resetTime,
       };
     }
     if (existingRateLimit.messageCount >= CONSTANTS.FREE_MESSAGE_LIMIT) {
-      console.log("existing rate limit exceeded");
       return {
         allowed: false,
         messageCount: existingRateLimit.messageCount,
+        resetTime: existingRateLimit.resetTime,
       };
     }
-    console.log("existing rate limit allowed");
     return {
       allowed: true,
       messageCount: existingRateLimit.messageCount,
+      resetTime: existingRateLimit.resetTime,
     };
   }
 
   const createResult = await createRateLimit(userId, inputId);
-  console.log("create result");
   return {
     allowed: true,
     messageCount: createResult.messageCount,
+    resetTime: createResult.resetTime,
   };
 };

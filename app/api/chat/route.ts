@@ -1,5 +1,6 @@
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { initializeOTEL } from "langsmith/experimental/otel/setup";
+import prettyMilliseconds from "pretty-ms";
 import { getChat } from "@/actions/chat";
 import { saveMessage } from "@/actions/messages";
 import { auth } from "@/lib/auth";
@@ -47,13 +48,16 @@ export async function POST(req: Request) {
     }
 
     if (!apikey) {
-      const { allowed, messageCount } = await handleRateLimit(
-        userId,
-        lastInputId,
-      );
-      console.log("🚀 ~ POST ~ messageCount:", messageCount);
+      const { allowed, resetTime } = await handleRateLimit(userId, lastInputId);
+
       if (!allowed) {
-        return new Response("Rate limit exceeded", { status: 429 });
+        return new Response(
+          `Rate limit exceeded. Either bring your own key or wait for "${prettyMilliseconds(
+            resetTime.getTime() - Date.now(),
+            { keepDecimalsOnWholeSeconds: false },
+          )}"`,
+          { status: 429 },
+        );
       }
     }
 
