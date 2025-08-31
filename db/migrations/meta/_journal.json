@@ -15,6 +15,13 @@
       "when": 1756535746452,
       "tag": "0001_breezy_stone_men",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756635213190,
+      "tag": "0002_chemical_venom",
+      "breakpoints": true
     }
   ]
 }

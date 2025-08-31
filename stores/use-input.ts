@@ -4,6 +4,8 @@ import { persist } from "zustand/middleware";
 type InputStore = {
   input: string;
   setInput: (input: string) => void;
+  inputId: string;
+  setInputId: (inputId: string) => void;
   streamingModelIds: string[];
   setStreamingModelId: (modelId: string) => void;
   removeStreamedModelId: (modelId: string) => void;
@@ -20,6 +22,8 @@ export const useInput = create<InputStore>()(
     (set) => ({
       input: "",
       setInput: (input: string) => set({ input }),
+      inputId: "",
+      setInputId: (inputId: string) => set({ inputId }),
       streamingModelIds: [],
       setStreamingModelId: (modelId: string) =>
         set((state) => {

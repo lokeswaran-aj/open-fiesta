@@ -1,6 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Model } from "@/lib/types";
 import { useApiKey } from "@/stores/use-api-key";
 import { useInput } from "@/stores/use-input";
@@ -12,6 +12,7 @@ export const useConversation = (
   initialMessages: UIMessage[],
 ) => {
   const input = useInput((state) => state.input);
+  const inputId = useInput((state) => state.inputId);
   const aimlApiKey = useApiKey((state) => state.aimlApiKey);
   const openRouterApiKey = useApiKey((state) => state.openRouterApiKey);
   const vercelApiKey = useApiKey((state) => state.vercelApiKey);
@@ -23,6 +24,12 @@ export const useConversation = (
   const removeStreamedModelId = useInput(
     (state) => state.removeStreamedModelId,
   );
+
+  const lastInputIdRef = useRef(inputId);
+
+  useEffect(() => {
+    lastInputIdRef.current = inputId;
+  }, [inputId]);
 
   const [apiKey, setApiKey] = useState({
     openrouter: openRouterApiKey,
@@ -41,12 +48,6 @@ export const useConversation = (
   const { messages, sendMessage, stop, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
-      body: {
-        chatId,
-        fullModelId: model.id,
-        isFree: model.isFree,
-        apikey: apiKey[model.gateway as keyof typeof apiKey],
-      },
     }),
     messages: initialMessages,
     id: conversationId,
@@ -62,9 +63,20 @@ export const useConversation = (
   useEffect(() => {
     if (shouldSubmit) {
       setStreamingModelId(model.id);
-      sendMessage({
-        text: input,
-      });
+      sendMessage(
+        {
+          text: input,
+        },
+        {
+          body: {
+            chatId,
+            lastInputId: lastInputIdRef.current,
+            fullModelId: model.id,
+            isFree: model.isFree,
+            apikey: apiKey[model.gateway as keyof typeof apiKey],
+          },
+        },
+      );
       setShouldSubmit(false);
     }
   }, [
@@ -74,6 +86,10 @@ export const useConversation = (
     sendMessage,
     setShouldSubmit,
     setStreamingModelId,
+    apiKey,
+    model.gateway,
+    chatId,
+    model.isFree,
   ]);
 
   useEffect(() => {

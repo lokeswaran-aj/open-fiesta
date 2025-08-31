@@ -3,6 +3,7 @@
 import { ArrowUp, Loader2, Paperclip, Square, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { v7 as uuidv7 } from "uuid";
 import {
   PromptInput,
   PromptInputAction,
@@ -26,6 +27,7 @@ export const ChatInput = (props: ChatInputProps) => {
   const isLoading = useInput((state) => state.isLoading);
   const setShouldStop = useInput((state) => state.setShouldStop);
   const selectedModels = useModels((state) => state.selectedModels);
+  const setInputId = useInput((state) => state.setInputId);
 
   const [files, setFiles] = useState<File[]>([]);
   const uploadInputRef = useRef<HTMLInputElement>(null);
@@ -53,6 +55,7 @@ export const ChatInput = (props: ChatInputProps) => {
       return;
     }
     if (isCreatingChat) return;
+    setInputId(uuidv7());
 
     handleSubmit();
   };

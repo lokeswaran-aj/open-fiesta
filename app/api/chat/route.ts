@@ -1,8 +1,11 @@
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { initializeOTEL } from "langsmith/experimental/otel/setup";
+import prettyMilliseconds from "pretty-ms";
 import { getChat } from "@/actions/chat";
 import { saveMessage } from "@/actions/messages";
 import { auth } from "@/lib/auth";
+import { CONSTANTS } from "@/lib/constant";
+import { handleRateLimit } from "@/lib/ratelimit";
 import type { Gateway } from "@/lib/types";
 import { prepareModelAndMessages } from "./prepare-model-and-messages";
 import { getProviderOptions } from "./providerOptions";
@@ -13,6 +16,7 @@ initializeOTEL();
 type ChatRequest = {
   id: string;
   chatId: string;
+  lastInputId: string;
   messages: UIMessage[];
   fullModelId: string;
   isFree: boolean;
@@ -23,6 +27,7 @@ export async function POST(req: Request) {
   try {
     const {
       id: conversationId,
+      lastInputId,
       messages,
       chatId,
       fullModelId,
@@ -41,6 +46,20 @@ export async function POST(req: Request) {
 
     if (!isFree && !apikey?.trim().length) {
       return new Response("API key is required", { status: 403 });
+    }
+
+    if (!apikey) {
+      const { allowed, resetTime } = await handleRateLimit(userId, lastInputId);
+
+      if (!allowed) {
+        return new Response(
+          `Rate limit exceeded. Either bring your own key or wait for "${prettyMilliseconds(
+            resetTime.getTime() - Date.now(),
+            { keepDecimalsOnWholeSeconds: false },
+          )}"`,
+          { status: 429 },
+        );
+      }
     }
 
     const [gateway, modelId] = fullModelId.split(":");
@@ -65,6 +84,7 @@ export async function POST(req: Request) {
         modelMessages,
         apikey,
       ),
+      maxOutputTokens: apikey ? undefined : CONSTANTS.MAX_OUTPUT_TOKENS,
       providerOptions: getProviderOptions(modelId),
       onError: (error) => {
         console.dir(error, { depth: null });

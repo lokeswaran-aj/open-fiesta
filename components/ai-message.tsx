@@ -43,7 +43,7 @@ export const AiMessage = (props: Props) => {
                 {part.text}
               </MessageContent>
             );
-          } else if (part.type === "reasoning") {
+          } else if (part.type === "reasoning" && part.text) {
             return (
               <Reasoning
                 isStreaming={isStreaming}
@@ -52,7 +52,7 @@ export const AiMessage = (props: Props) => {
                 <ReasoningTrigger>Reasoning</ReasoningTrigger>
                 <ReasoningContent
                   markdown
-                  className="ml-2 border-l-2 border-l-slate-200 px-2 pb-1 dark:border-l-slate-700 prose dark:prose-invert"
+                  className="ml-2 border-l-2 border-l-gray-200 px-2 pb-1 dark:border-l-gray-700 prose dark:prose-invert"
                 >
                   {part.text}
                 </ReasoningContent>
