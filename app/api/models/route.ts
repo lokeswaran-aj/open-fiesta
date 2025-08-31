@@ -1,6 +1,5 @@
 import millify from "millify";
 import { NextResponse } from "next/server";
-import { freeModels } from "@/lib/models";
 import type {
   AIMLModel,
   Model,
@@ -67,7 +66,7 @@ const fetchAIMLModels = async (): Promise<Model[]> => {
             input: formatPrice("-1"),
             output: formatPrice("-1"),
           },
-          isFree: freeModels.has(model.id),
+          isFree: false,
         });
       }
       return acc;
