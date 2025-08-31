@@ -3,6 +3,7 @@ import { initializeOTEL } from "langsmith/experimental/otel/setup";
 import { getChat } from "@/actions/chat";
 import { saveMessage } from "@/actions/messages";
 import { auth } from "@/lib/auth";
+import { handleRateLimit } from "@/lib/ratelimit";
 import type { Gateway } from "@/lib/types";
 import { prepareModelAndMessages } from "./prepare-model-and-messages";
 import { getProviderOptions } from "./providerOptions";
@@ -13,6 +14,7 @@ initializeOTEL();
 type ChatRequest = {
   id: string;
   chatId: string;
+  lastInputId: string;
   messages: UIMessage[];
   fullModelId: string;
   isFree: boolean;
@@ -23,6 +25,7 @@ export async function POST(req: Request) {
   try {
     const {
       id: conversationId,
+      lastInputId,
       messages,
       chatId,
       fullModelId,
@@ -41,6 +44,17 @@ export async function POST(req: Request) {
 
     if (!isFree && !apikey?.trim().length) {
       return new Response("API key is required", { status: 403 });
+    }
+
+    if (!apikey) {
+      const { allowed, messageCount } = await handleRateLimit(
+        userId,
+        lastInputId,
+      );
+      console.log("🚀 ~ POST ~ messageCount:", messageCount);
+      if (!allowed) {
+        return new Response("Rate limit exceeded", { status: 429 });
+      }
     }
 
     const [gateway, modelId] = fullModelId.split(":");
