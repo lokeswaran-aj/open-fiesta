@@ -1,32 +1,33 @@
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
-import { MessageAction } from "./prompt-kit/message";
-import { Button } from "./ui/button";
+import { MessageAction } from "@/components/prompt-kit/message";
+import { Button } from "@/components/ui/button";
 
-type Props = { text: string };
+type Props = {
+  text: string;
+};
 
-export const CopyAction = (props: Props) => {
-  const { text } = props;
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+export const CopyAction = ({ text }: Props) => {
+  const [isCopied, setIsCopied] = useState(false);
   return (
-    <MessageAction tooltip="Copy" side="bottom">
+    <MessageAction
+      tooltip={isCopied ? "Copied" : "Copy"}
+      side="bottom"
+      delayDuration={1000}
+    >
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 rounded-full"
-        onClick={handleCopy}
+        className="rounded-full"
+        onClick={() => {
+          navigator.clipboard.writeText(text);
+          setIsCopied(true);
+          setTimeout(() => {
+            setIsCopied(false);
+          }, 2000);
+        }}
       >
-        {copied ? (
-          <Check className="size-4 text-green-500" />
-        ) : (
-          <Copy className="size-4" />
-        )}
+        {isCopied ? <Check /> : <Copy />}
       </Button>
     </MessageAction>
   );

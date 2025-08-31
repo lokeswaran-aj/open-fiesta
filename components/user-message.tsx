@@ -13,32 +13,22 @@ type Props = {
 
 export const UserMessage = ({ message }: Props) => {
   return (
-    <Message className="justify-end">
-      <div className="max-w-[85%] flex-1 sm:max-w-[75%]">
-        {message.parts.map((part, index) => {
-          if (part.type === "text") {
-            return (
-              <Fragment key={`${message.id}-text-${index}`}>
-                <MessageContent className="bg-primary text-primary-foreground rounded-2xl px-4 py-2 min-w-fit max-w-[85%] sm:max-w-[75%] justify-self-end">
-                  {part.text}
-                </MessageContent>
-                <MessageActions className="flex gap-2 flex-row-reverse">
-                  {message.parts.filter((part) => part.type === "text").length >
-                    0 && (
-                    <CopyAction
-                      text={message.parts
-                        .filter((part) => part.type === "text")
-                        .map((part) => part.text)
-                        .join("\n")}
-                    />
-                  )}
-                </MessageActions>
-              </Fragment>
-            );
-          }
-          return null;
-        })}
-      </div>
+    <Message className="group flex flex-col items-end gap-1">
+      {message.parts.map((part, index) => {
+        if (part.type === "text") {
+          return (
+            <Fragment key={`${message.id}-text-${index}`}>
+              <MessageContent className="bg-primary text-primary-foreground min-w-fit max-w-[85%] rounded-3xl px-3 py-1.5 sm:max-w-[75%]">
+                {part.text}
+              </MessageContent>
+              <MessageActions className="flex gap-0">
+                <CopyAction text={part.text} />
+              </MessageActions>
+            </Fragment>
+          );
+        }
+        return null;
+      })}
     </Message>
   );
 };

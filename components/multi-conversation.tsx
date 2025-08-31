@@ -33,15 +33,15 @@ export const MultiConversation = (props: Props) => {
   }
 
   const screenWidth = typeof window !== "undefined" ? window.innerWidth : 0;
-  const panelGroupWidth = Math.max(selectedModels.length * 500, screenWidth);
+  const minWidth = 400;
+  const maxWidth = 800;
+  const allocationWidth = screenWidth > 500 ? 500 : screenWidth;
+  const totalAllocatedWidth = selectedModels.length * allocationWidth;
+  const panelGroupWidth = Math.max(totalAllocatedWidth, screenWidth);
 
-  const equalSize = 100 / selectedModels.length;
-  const maxSize = (800 / panelGroupWidth) * 100;
-  const minSize = (400 / panelGroupWidth) * 100;
-
-  const adjustedMaxSize = selectedModels.length === 1 ? 100 : maxSize;
-  const defaultSize =
-    selectedModels.length === 1 ? 100 : Math.min(equalSize, maxSize);
+  const defaultSizePercentage = 100 / selectedModels.length;
+  const minSizePercentage = (minWidth / panelGroupWidth) * 100;
+  const maxSizePercentage = (maxWidth / panelGroupWidth) * 100;
 
   return (
     <div className="flex h-full w-full overflow-hidden">
@@ -59,7 +59,6 @@ export const MultiConversation = (props: Props) => {
       {selectedModels.length > 0 && (
         <div className="overflow-x-auto h-full w-full">
           <ResizablePanelGroup
-            key={`panel-group-${selectedModels.length}`}
             direction="horizontal"
             className="h-full border"
             style={{ minWidth: `${panelGroupWidth}px` }}
@@ -67,11 +66,11 @@ export const MultiConversation = (props: Props) => {
             {selectedModels.map((model, index) => (
               <Fragment key={model.id}>
                 <ResizablePanel
-                  key={model.id}
-                  defaultSize={defaultSize}
-                  minSize={minSize}
-                  maxSize={adjustedMaxSize}
+                  defaultSize={defaultSizePercentage}
+                  minSize={minSizePercentage}
+                  maxSize={maxSizePercentage}
                   id={`conversation-${model.id}`}
+                  order={index + 1}
                 >
                   <div className="h-full flex flex-col">
                     <Conversation
@@ -86,7 +85,6 @@ export const MultiConversation = (props: Props) => {
                 </ResizablePanel>
                 {index < selectedModels.length - 1 && (
                   <ResizableHandle
-                    key={`handle-${model.id}`}
                     withHandle
                     className="border-r border-gray-300 dark:border-gray-700"
                   />

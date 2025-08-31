@@ -1,11 +1,11 @@
 import type { UIMessage } from "@ai-sdk/react";
-import { Fragment } from "react";
-import { Markdown } from "@/components/prompt-kit/markdown";
 import {
   Message,
   MessageActions,
   MessageAvatar,
+  MessageContent,
 } from "@/components/prompt-kit/message";
+import { cn } from "@/lib/utils";
 import { CopyAction } from "./copy-action";
 import { ModelLogo } from "./model-selection/model-logo";
 import {
@@ -25,55 +25,52 @@ export const AiMessage = (props: Props) => {
 
   return (
     <Message className="justify-start">
-      <div className="flex items-start mt-2.5 mr-[-10px]">
+      <div className="flex items-start mt-0.5">
         <MessageAvatar
           className="size-5 flex items-center justify-center"
           component={<ModelLogo provider={provider} />}
         />
       </div>
-      <div className="max-w-[85%] flex-1 sm:max-w-[75%]">
-        <div className="prose p-2">
-          {message.parts.map((part, index) => {
-            if (part.type === "text") {
-              return (
-                <Fragment key={`${message.id}-text-${index}`}>
-                  <Markdown>{part.text}</Markdown>
-                  <MessageActions className="flex gap-2">
-                    {message.parts.filter((part) => part.type === "text")
-                      .length > 0 && (
-                      <CopyAction
-                        text={message.parts
-                          .filter((part) => part.type === "text")
-                          .map((part) => part.text)
-                          .join("\n")}
-                      />
-                    )}
-                  </MessageActions>
-                </Fragment>
-              );
-            } else if (part.type === "reasoning" && part.text) {
-              return (
-                <Reasoning
-                  isStreaming={isStreaming}
-                  key={`${message.id}-reasoning-${index}`}
+      <div className="group flex w-full flex-col gap-0">
+        {message.parts.map((part, index) => {
+          if (part.type === "text") {
+            return (
+              <MessageContent
+                key={`${message.id}-${part.type}-${index}`}
+                className="text-foreground prose dark:prose-invert w-full flex-1 rounded-lg bg-transparent p-0"
+                markdown
+              >
+                {part.text}
+              </MessageContent>
+            );
+          } else if (part.type === "reasoning") {
+            return (
+              <Reasoning
+                isStreaming={isStreaming}
+                key={`${message.id}-${part.type}-${index}`}
+              >
+                <ReasoningTrigger>Reasoning</ReasoningTrigger>
+                <ReasoningContent
+                  markdown
+                  className="ml-2 border-l-2 border-l-slate-200 px-2 pb-1 dark:border-l-slate-700 prose dark:prose-invert"
                 >
-                  {isStreaming ? (
-                    <ReasoningTrigger>Thinking</ReasoningTrigger>
-                  ) : (
-                    <ReasoningTrigger>Thoughts</ReasoningTrigger>
-                  )}
-                  <ReasoningContent
-                    markdown
-                    className="ml-2 border-l-2 border-l-gray-200 px-2 pb-1 dark:border-l-gray-700"
-                  >
-                    {part.text}
-                  </ReasoningContent>
-                </Reasoning>
-              );
-            }
-            return null;
-          })}
-        </div>
+                  {part.text}
+                </ReasoningContent>
+              </Reasoning>
+            );
+          }
+          return null;
+        })}
+        <MessageActions
+          className={cn("-ml-2.5 flex gap-0", isStreaming && "opacity-0")}
+        >
+          <CopyAction
+            text={message.parts
+              .filter((part) => part.type === "text")
+              .map((part) => part.text)
+              .join("")}
+          />
+        </MessageActions>
       </div>
     </Message>
   );
