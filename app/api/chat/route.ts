@@ -4,6 +4,7 @@ import prettyMilliseconds from "pretty-ms";
 import { getChat } from "@/actions/chat";
 import { saveMessage } from "@/actions/messages";
 import { auth } from "@/lib/auth";
+import { CONSTANTS } from "@/lib/constant";
 import { handleRateLimit } from "@/lib/ratelimit";
 import type { Gateway } from "@/lib/types";
 import { prepareModelAndMessages } from "./prepare-model-and-messages";
@@ -83,6 +84,7 @@ export async function POST(req: Request) {
         modelMessages,
         apikey,
       ),
+      maxOutputTokens: apikey ? undefined : CONSTANTS.MAX_OUTPUT_TOKENS,
       providerOptions: getProviderOptions(modelId),
       onError: (error) => {
         console.dir(error, { depth: null });
