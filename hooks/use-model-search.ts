@@ -47,7 +47,7 @@ export const useModelSearch = (models: Model[]) => {
     [gatewayA]: [string, Record<string, Model[]>],
     [gatewayB]: [string, Record<string, Model[]>],
   ) => {
-    const gatewayOrder = ["openrouter", "vercel", "aimlapi"];
+    const gatewayOrder = ["vercel", "openrouter"];
     const gatewayIndexA = gatewayOrder.indexOf(gatewayA);
     const gatewayIndexB = gatewayOrder.indexOf(gatewayB);
 

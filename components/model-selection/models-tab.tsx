@@ -8,9 +8,9 @@ export const ModelsTab = ({
   sortedProviders: Array<{ [key: string]: unknown }>;
 }) => (
   <Tabs defaultValue="vercel" className="h-full flex flex-col">
-    <TabsList className="grid w-full grid-cols-3">
+    <TabsList className="grid w-full grid-cols-2">
       <TabsTrigger value="vercel">Vercel</TabsTrigger>
-      <TabsTrigger value="aimlapi">AIML API</TabsTrigger>
+      {/* <TabsTrigger value="aimlapi">AIML API</TabsTrigger> */}
       <TabsTrigger value="openrouter">OpenRouter</TabsTrigger>
     </TabsList>
 

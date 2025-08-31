@@ -107,18 +107,17 @@ const fetchVercelModels = async (): Promise<Model[]> => {
 
 export const GET = async () => {
   try {
-    const [openRouterModels, aimlModels, vercelModels] =
-      await Promise.allSettled([
-        fetchOpenRouterModels(),
-        fetchAIMLModels(),
-        fetchVercelModels(),
-      ]);
+    const [openRouterModels, vercelModels] = await Promise.allSettled([
+      fetchOpenRouterModels(),
+      // fetchAIMLModels(),
+      fetchVercelModels(),
+    ]);
 
     const allModels: Model[] = [
       ...(openRouterModels.status === "fulfilled"
         ? openRouterModels.value
         : []),
-      ...(aimlModels.status === "fulfilled" ? aimlModels.value : []),
+      // ...(aimlModels.status === "fulfilled" ? aimlModels.value : []),
       ...(vercelModels.status === "fulfilled" ? vercelModels.value : []),
     ];
 

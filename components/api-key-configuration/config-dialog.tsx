@@ -104,7 +104,7 @@ export const ConfigDialog = () => {
                 setApiKey({ ...apiKey, vercelApiKey: value });
               }}
             />
-            <ConfigInput
+            {/* <ConfigInput
               id="aiml-api-key"
               name="aiml-api-key"
               placeholder="8g1b..."
@@ -116,7 +116,7 @@ export const ConfigDialog = () => {
               onChange={(value) => {
                 setApiKey({ ...apiKey, aimlApiKey: value });
               }}
-            />
+            /> */}
           </div>
           <DialogFooter>
             <DialogClose asChild>
