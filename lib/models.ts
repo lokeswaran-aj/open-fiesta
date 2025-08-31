@@ -119,6 +119,7 @@ export const freeModels = new Set([
   "qwen/qwen2.5-vl-32b-instruct",
   "xai/grok-3-mini",
   "x-ai/grok-3-mini-beta",
+  "xai/grok-code-fast-1",
   "moonshot/kimi-k2-preview",
   "perplexity/sonar",
   "mistralai/Mistral-7B-Instruct-v0.1",
