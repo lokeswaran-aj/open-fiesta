@@ -35,7 +35,10 @@ const fetchOpenRouterModels = async (): Promise<Model[]> => {
           output: formatPrice(model.pricing.completion),
         },
         gateway: "openrouter",
-        isFree: freeModels.has(model.id),
+        isFree:
+          Number(model.pricing.prompt) * 1000000 +
+            Number(model.pricing.completion) * 1000000 <=
+          1,
       });
       return acc;
     }, []);
@@ -94,7 +97,10 @@ const fetchVercelModels = async (): Promise<Model[]> => {
             output: formatPrice(model.pricing.output || "-1"),
           },
           context: millify(model.context_window),
-          isFree: freeModels.has(model.id),
+          isFree:
+            Number(formatPrice(model.pricing.input)) +
+              Number(formatPrice(model.pricing.output)) <=
+            1,
         });
       }
       return acc;
