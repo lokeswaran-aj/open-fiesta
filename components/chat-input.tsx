@@ -2,6 +2,7 @@
 
 import { ArrowUp, Paperclip, Square, X } from "lucide-react";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 import {
   PromptInput,
   PromptInputAction,
@@ -42,10 +43,14 @@ export const ChatInput = (props: ChatInputProps) => {
     }
   };
 
-  const isInputValid = input.trim() && selectedModels.length > 0 && !isLoading;
+  const isInputValid = input.trim() && !isLoading;
 
   const onSubmit = () => {
     if (!isInputValid) return;
+    if (selectedModels.length === 0) {
+      toast.error("Please select a model");
+      return;
+    }
 
     handleSubmit();
   };
