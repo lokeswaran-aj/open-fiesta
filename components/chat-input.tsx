@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUp, Paperclip, Square, X } from "lucide-react";
+import { ArrowUp, Loader2, Paperclip, Square, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -17,10 +17,11 @@ type ChatInputProps = {
   input: string;
   setInput: (input: string) => void;
   handleSubmit: () => void;
+  isCreatingChat?: boolean;
 };
 
 export const ChatInput = (props: ChatInputProps) => {
-  const { input, setInput, handleSubmit } = props;
+  const { input, setInput, handleSubmit, isCreatingChat = false } = props;
 
   const isLoading = useInput((state) => state.isLoading);
   const setShouldStop = useInput((state) => state.setShouldStop);
@@ -43,7 +44,7 @@ export const ChatInput = (props: ChatInputProps) => {
     }
   };
 
-  const isInputValid = input.trim() && !isLoading;
+  const isInputValid = input.trim() && !isLoading && !isCreatingChat;
 
   const onSubmit = () => {
     if (!isInputValid) return;
@@ -51,6 +52,7 @@ export const ChatInput = (props: ChatInputProps) => {
       toast.error("Please select a model");
       return;
     }
+    if (isCreatingChat) return;
 
     handleSubmit();
   };
@@ -106,7 +108,13 @@ export const ChatInput = (props: ChatInputProps) => {
           </PromptInputAction>
 
           <PromptInputAction
-            tooltip={isLoading ? "Stop generation" : "Send message"}
+            tooltip={
+              isLoading
+                ? "Stop generation"
+                : isCreatingChat
+                  ? "Creating chat..."
+                  : "Send message"
+            }
           >
             {isLoading ? (
               <Button
@@ -122,10 +130,14 @@ export const ChatInput = (props: ChatInputProps) => {
                 variant="default"
                 size="icon"
                 className="h-8 w-8 rounded-full"
-                disabled={!isInputValid}
+                disabled={!isInputValid || isCreatingChat}
                 onClick={onSubmit}
               >
-                <ArrowUp className="size-5" />
+                {isCreatingChat ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <ArrowUp className="size-5" />
+                )}
               </Button>
             )}
           </PromptInputAction>

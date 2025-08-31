@@ -1,5 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import { v7 as uuidv7 } from "uuid";
 import { createChat } from "@/actions/chat";
 import { createConversation } from "@/actions/conversation";
@@ -12,6 +14,7 @@ import { useModels } from "@/stores/use-models";
 
 export default function Home() {
   const router = useRouter();
+  const [isCreatingChat, setIsCreatingChat] = useState(false);
   const initialPrompt = useInitialPrompt((state) => state.initialPrompt);
   const setInitialPrompt = useInitialPrompt((state) => state.setInitialPrompt);
   const selectedModels = useModels((state) => state.selectedModels);
@@ -20,24 +23,33 @@ export default function Home() {
   );
   const chatId = uuidv7();
   const userId = authClient.useSession().data?.user.id;
+
   const handleSubmit = async () => {
     if (!userId) {
       return router.push("/auth");
     }
 
-    const newConversations = selectedModels.map((model) => {
-      const conversationId = createConversationId(model.id);
-      return {
-        id: conversationId,
-        chatId,
-        model,
-      };
-    });
+    setIsCreatingChat(true);
 
-    await createChat(chatId, userId);
-    await createConversation(newConversations);
+    try {
+      const newConversations = selectedModels.map((model) => {
+        const conversationId = createConversationId(model.id);
+        return {
+          id: conversationId,
+          chatId,
+          model,
+        };
+      });
 
-    router.push(`/c/${chatId}`);
+      await createChat(chatId, userId);
+      await createConversation(newConversations);
+
+      router.push(`/c/${chatId}`);
+    } catch (error) {
+      toast.error("Error creating chat");
+      console.error("Error creating chat:", error);
+      setIsCreatingChat(false);
+    }
   };
 
   return (
@@ -49,6 +61,7 @@ export default function Home() {
         input={initialPrompt}
         setInput={setInitialPrompt}
         handleSubmit={handleSubmit}
+        isCreatingChat={isCreatingChat}
       />
     </main>
   );
