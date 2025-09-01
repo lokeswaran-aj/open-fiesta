@@ -44,7 +44,7 @@ export default function Home() {
       });
 
       await createChat(chatId, userId);
-      submit({ context: initialPrompt, chatId });
+      submit({ input: initialPrompt, chatId });
       await createConversation(newConversations);
 
       router.push(`/c/${chatId}`);

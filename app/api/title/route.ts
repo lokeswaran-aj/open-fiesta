@@ -2,15 +2,44 @@ import { openai } from "@ai-sdk/openai";
 import type { LanguageModelV2 } from "@openrouter/ai-sdk-provider";
 import { generateObject } from "ai";
 import { NextResponse } from "next/server";
-import { updateChatTitle } from "@/actions/chat";
+import { getChatsByUserId, updateChatTitle } from "@/actions/chat";
+import { auth } from "@/lib/auth";
 import { titleSchema } from "@/lib/types";
 
 export const maxDuration = 30;
 
-export async function POST(req: Request) {
-  const { context, chatId } = await req.json();
+export const GET = async (req: Request) => {
+  const session = await auth.api.getSession({
+    headers: req.headers,
+  });
+  const userId = session?.user?.id;
 
-  const userMessage = context.slice(0, 500);
+  if (!userId) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const { searchParams } = new URL(req.url);
+  const offset = Number(searchParams.get("offset"));
+  const limit = Number(searchParams.get("limit"));
+
+  const chats = await getChatsByUserId(userId, limit, offset);
+
+  return NextResponse.json({ history: chats });
+};
+
+export async function POST(req: Request) {
+  const { input, chatId } = await req.json();
+
+  const session = await auth.api.getSession({
+    headers: req.headers,
+  });
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const userMessage = input.slice(0, 500);
 
   let model: string | LanguageModelV2 = "openai/gpt-4.1-nano";
   if (process.env.OPENAI_API_KEY) {
@@ -26,7 +55,7 @@ export async function POST(req: Request) {
     </user_message>`,
   });
 
-  await updateChatTitle(chatId, result.object.title);
+  await updateChatTitle(chatId, userId, result.object.title);
 
   return NextResponse.json(result.object);
 }

@@ -14,8 +14,8 @@ export const Logout = () => {
 
   return (
     <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-      <LogOut className="size-4" />
-      Log out
+      <LogOut className="size-4 text-destructive" />
+      <span className="text-destructive">Log out</span>
     </DropdownMenuItem>
   );
 };
