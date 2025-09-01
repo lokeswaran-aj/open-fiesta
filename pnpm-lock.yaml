@@ -110,6 +110,9 @@ importers:
       posthog-js:
         specifier: ^1.261.0
         version: 1.261.0
+      posthog-node:
+        specifier: ^5.8.1
+        version: 5.8.1
       pretty-ms:
         specifier: ^9.2.0
         version: 9.2.0
@@ -3585,6 +3588,10 @@ packages:
         optional: true
       rrweb-snapshot:
         optional: true
+
+  posthog-node@5.8.1:
+    resolution: {integrity: sha512-YJYlYnlpItVjHqM9IhvZx8TzK8gnx2nU+0uhiog4RN47NnV0Z0K1AdC4ul+O8VuvS/jHqKCQvL8iAONRA37+0A==}
+    engines: {node: '>=20'}
 
   preact@10.27.1:
     resolution: {integrity: sha512-V79raXEWch/rbqoNc7nT9E4ep7lu+mI3+sBmfRD4i1M73R3WLYcCtdI0ibxGVf4eQL8ZIz2nFacqEC+rmnOORQ==}
@@ -8346,6 +8353,10 @@ snapshots:
       fflate: 0.4.8
       preact: 10.27.1
       web-vitals: 4.2.4
+
+  posthog-node@5.8.1:
+    dependencies:
+      '@posthog/core': 1.0.2
 
   preact@10.27.1: {}
 
