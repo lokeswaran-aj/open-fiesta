@@ -44,7 +44,7 @@ export const MultiConversation = (props: Props) => {
   const maxSizePercentage = (maxWidth / panelGroupWidth) * 100;
 
   return (
-    <div className="flex h-full w-full overflow-hidden">
+    <div className="flex h-full overflow-hidden">
       {selectedModels.length === 0 && (
         <div className="flex-1 flex flex-col items-center justify-center gap-4">
           <p className="text-gray-500 dark:text-gray-400">
@@ -57,7 +57,7 @@ export const MultiConversation = (props: Props) => {
         </div>
       )}
       {selectedModels.length > 0 && (
-        <div className="overflow-x-auto h-full w-full">
+        <div className="overflow-x-auto h-full flex-1">
           <ResizablePanelGroup
             direction="horizontal"
             className="h-full border"

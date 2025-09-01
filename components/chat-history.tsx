@@ -2,7 +2,7 @@
 
 import { MoreHorizontal, Pen, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -19,19 +19,27 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import type { ChatType } from "@/db/schema";
+import { useChat } from "@/stores/use-chat";
 import { Skeleton } from "./ui/skeleton";
 
-const LIMIT = 20;
+const LIMIT = 30;
 
 export const ChatHistory = () => {
   const { isMobile } = useSidebar();
   const router = useRouter();
 
-  const [offset, setOffset] = useState(0);
-  const [history, setHistory] = useState<ChatType[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const {
+    history,
+    setHistory,
+    addToHistory,
+    offset,
+    setOffset,
+    hasMore,
+    setHasMore,
+    loading,
+    setLoading,
+  } = useChat();
+
   const observerRef = useRef<IntersectionObserver>(null);
 
   const lastElement = useCallback(
@@ -45,7 +53,7 @@ export const ChatHistory = () => {
       });
       if (node) observerRef.current.observe(node);
     },
-    [loading, hasMore, offset],
+    [loading, hasMore, offset, setOffset],
   );
 
   useEffect(() => {
@@ -55,7 +63,7 @@ export const ChatHistory = () => {
         const data = await fetch(`/api/title?offset=${offset}&limit=${LIMIT}`);
         const { history: chats } = await data.json();
         if (offset === 0) setHistory(chats);
-        else setHistory((prev) => [...prev, ...chats]);
+        else addToHistory(chats);
         setHasMore(chats.length === LIMIT);
       } catch (error) {
         console.error(error);
@@ -66,7 +74,7 @@ export const ChatHistory = () => {
       }
     };
     fetchHistory();
-  }, [offset]);
+  }, [offset, setHistory, setHasMore, setLoading, addToHistory]);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -77,7 +85,7 @@ export const ChatHistory = () => {
               asChild
               onClick={() => router.push(`/c/${item.id}`)}
             >
-              <span>{item.title}</span>
+              <span className="truncate">{item.title}</span>
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
