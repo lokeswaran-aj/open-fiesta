@@ -89,6 +89,7 @@ export const chat = pgTable("chat", {
   visibility: varchar("visibility", { enum: ["public", "private"] })
     .notNull()
     .default("private"),
+  title: text("title").notNull().default("New Chat"),
   createdAt: timestamp("created_at")
     .$defaultFn(() => new Date())
     .notNull(),

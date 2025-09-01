@@ -1,0 +1,1 @@
+ALTER TABLE "chat" ADD COLUMN "title" text DEFAULT 'New Chat' NOT NULL;
