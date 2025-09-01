@@ -7,6 +7,7 @@ import { createChat } from "@/actions/chat";
 import { createConversation } from "@/actions/conversation";
 import { ChatInput } from "@/components/chat-input";
 import { MultiConversation } from "@/components/multi-conversation";
+import { useTitle } from "@/hooks/use-title";
 import { authClient } from "@/lib/auth-client";
 import { useConversationIds } from "@/stores/use-conversation-ids";
 import { useInitialPrompt } from "@/stores/use-initial-prompt";
@@ -14,6 +15,7 @@ import { useModels } from "@/stores/use-models";
 
 export default function Home() {
   const router = useRouter();
+  const { submit } = useTitle();
   const [isCreatingChat, setIsCreatingChat] = useState(false);
   const initialPrompt = useInitialPrompt((state) => state.initialPrompt);
   const setInitialPrompt = useInitialPrompt((state) => state.setInitialPrompt);
@@ -42,6 +44,7 @@ export default function Home() {
       });
 
       await createChat(chatId, userId);
+      submit({ context: initialPrompt, chatId });
       await createConversation(newConversations);
 
       router.push(`/c/${chatId}`);

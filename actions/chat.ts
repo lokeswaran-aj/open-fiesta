@@ -70,6 +70,10 @@ export const getChatWithConversationsWithMessages = async (id: string) => {
   };
 };
 
+export const updateChatTitle = async (id: string, title: string) => {
+  await db.update(chat).set({ title }).where(eq(chat.id, id));
+};
+
 export type ConversationsWithMessages = {
   conversation: ConversationType;
   messages: MessageType[];
