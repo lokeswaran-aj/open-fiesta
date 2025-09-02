@@ -3,6 +3,8 @@
 import type { User } from "better-auth";
 import { ChevronsUpDown, KeyRound, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -20,6 +22,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Logout } from "./logout";
+import Icons from "./ui/icons";
 
 type Props = {
   user: User | undefined;
@@ -29,6 +32,11 @@ export function NavUser(props: Props) {
   const { user } = props;
   const router = useRouter();
   const { isMobile } = useSidebar();
+  const { setTheme } = useTheme();
+
+  const toggleTheme = React.useCallback(() => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  }, [setTheme]);
 
   if (!user) {
     return (
@@ -112,6 +120,12 @@ export function NavUser(props: Props) {
               >
                 <KeyRound />
                 Configure API Key
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={toggleTheme}>
+                <Icons.themeChanger className="size-4" />
+                Switch Theme
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
