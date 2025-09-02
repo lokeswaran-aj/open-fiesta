@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-ml.api/aimlapi-vercel-ai": "^1.0.2",
     "@ai-sdk/gateway": "^1.0.11",
+    "@ai-sdk/google": "^2.0.11",
     "@ai-sdk/openai": "^2.0.23",
     "@ai-sdk/react": "^2.0.22",
     "@dnd-kit/core": "^6.3.1",
