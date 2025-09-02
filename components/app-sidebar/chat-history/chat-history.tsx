@@ -94,6 +94,9 @@ export const ChatHistory = () => {
 
       setEditingId(null);
       setEditingTitle("");
+      if (editingId === chatId) {
+        setTitle(editingTitle);
+      }
       toast.success("Chat title updated");
     } catch (error) {
       console.error(error);
