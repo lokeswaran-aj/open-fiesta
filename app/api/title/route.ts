@@ -2,7 +2,7 @@ import { openai } from "@ai-sdk/openai";
 import type { LanguageModelV2 } from "@openrouter/ai-sdk-provider";
 import { generateObject } from "ai";
 import { NextResponse } from "next/server";
-import { getChatsByUserId, updateChatTitle } from "@/actions/chat";
+import { deleteChat, getChatsByUserId, updateChatTitle } from "@/actions/chat";
 import { auth } from "@/lib/auth";
 import { titleSchema } from "@/lib/types";
 
@@ -58,4 +58,26 @@ export async function POST(req: Request) {
   await updateChatTitle(chatId, userId, result.object.title);
 
   return NextResponse.json(result.object);
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { chatId } = await req.json();
+
+    const session = await auth.api.getSession({
+      headers: req.headers,
+    });
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    await deleteChat(chatId, userId);
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error(error);
+    return new Response("Internal server error", { status: 500 });
+  }
 }

@@ -96,6 +96,10 @@ export const updateChatTitle = async (
     .where(and(eq(chat.id, id), eq(chat.userId, userId)));
 };
 
+export const deleteChat = async (id: string, userId: string) => {
+  await db.delete(chat).where(and(eq(chat.id, id), eq(chat.userId, userId)));
+};
+
 export type ConversationsWithMessages = {
   conversation: ConversationType;
   messages: MessageType[];

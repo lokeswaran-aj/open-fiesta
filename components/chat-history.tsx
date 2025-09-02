@@ -76,6 +76,16 @@ export const ChatHistory = () => {
     fetchHistory();
   }, [offset, setHistory, setHasMore, setLoading, addToHistory]);
 
+  const handleDeleteChat = async (chatId: string) => {
+    await fetch(`/api/title`, {
+      method: "DELETE",
+      body: JSON.stringify({ chatId }),
+    });
+    setHistory(history.filter((item) => item.id !== chatId));
+    toast.success("Chat deleted");
+    router.replace("/");
+  };
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarMenu>
@@ -106,7 +116,7 @@ export const ChatHistory = () => {
                   <span>Rename</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleDeleteChat(item.id)}>
                   <Trash2 className="text-destructive" />
                   <span className="text-destructive">Delete</span>
                 </DropdownMenuItem>
