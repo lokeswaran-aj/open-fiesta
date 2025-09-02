@@ -34,12 +34,22 @@ export const ChatHistoryDropdown = ({
         side={isMobile ? "bottom" : "right"}
         align={isMobile ? "end" : "start"}
       >
-        <DropdownMenuItem onClick={() => onRename(item.id, item.title)}>
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            onRename(item.id, item.title);
+          }}
+        >
           <Pen className="text-muted-foreground" />
           <span>Rename</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => onDelete(item.id)}>
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(item.id);
+          }}
+        >
           <Trash2 className="text-destructive" />
           <span className="text-destructive">Delete</span>
         </DropdownMenuItem>

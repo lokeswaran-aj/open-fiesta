@@ -1,3 +1,4 @@
+import { useParams } from "next/navigation";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { ChatHistoryDropdown } from "./chat-history-dropdown";
 
@@ -16,8 +17,16 @@ export const ChatHistoryItemView = ({
   onClick,
   isMobile,
 }: ChatHistoryItemViewProps) => {
+  const params = useParams();
+  const currentChatId = params?.id as string;
+  const isSelected = currentChatId === item.id;
+
   return (
-    <SidebarMenuButton asChild onClick={onClick}>
+    <SidebarMenuButton
+      asChild
+      onClick={onClick}
+      className={isSelected ? "bg-accent/70 text-accent-foreground" : ""}
+    >
       <div className="min-w-0 flex-1">
         <span className="block truncate text-left">{item.title}</span>
         <ChatHistoryDropdown
