@@ -5,6 +5,7 @@ import type { ChatWithConversationsWithMessages } from "@/actions/chat";
 import { ChatInput } from "@/components/chat-input";
 import { MultiConversation } from "@/components/multi-conversation";
 import { useConversationIds } from "@/stores/use-conversation-ids";
+import { useHistory } from "@/stores/use-history";
 import { useInitialPrompt } from "@/stores/use-initial-prompt";
 import { useInput } from "@/stores/use-input";
 import { useModels } from "@/stores/use-models";
@@ -29,11 +30,18 @@ export const Chat = (props: Props) => {
   const conversationIds = useConversationIds((state) => state.conversationIds);
   const setSelectedModels = useModels((state) => state.setSelectedModels);
   const models = useModels((state) => state.models);
+  const setTitle = useHistory((state) => state.setTitle);
+
+  useEffect(() => {
+    if (chat) {
+      setTitle(chat.chat.title);
+    }
+  }, [chat, setTitle]);
 
   useEffect(() => {
     if (hasSetModels.current) return;
-    hasSetModels.current = true;
     if (chat && models.length > 0) {
+      hasSetModels.current = true;
       const { conversations } = chat;
       const conversationIds = conversations.map(({ conversation }) => ({
         modelId: conversation.model.id,

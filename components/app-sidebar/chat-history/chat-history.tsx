@@ -25,6 +25,7 @@ export const ChatHistory = () => {
     setHasMore,
     loading,
     setLoading,
+    setTitle,
   } = useHistory();
 
   const observerRef = useRef<IntersectionObserver>(null);
@@ -105,6 +106,11 @@ export const ChatHistory = () => {
     setEditingTitle("");
   };
 
+  const handleClick = (chatId: string) => {
+    router.push(`/c/${chatId}`);
+    setTitle(history.find((item) => item.id === chatId)?.title || "New Chat");
+  };
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarMenu>
@@ -119,7 +125,7 @@ export const ChatHistory = () => {
             onSave={handleRenameSave}
             onCancel={handleRenameCancel}
             onChange={setEditingTitle}
-            onClick={() => router.push(`/c/${item.id}`)}
+            onClick={() => handleClick(item.id)}
             isMobile={isMobile}
           />
         ))}
