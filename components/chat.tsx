@@ -75,7 +75,7 @@ export const Chat = (props: Props) => {
   };
 
   return (
-    <main className="flex flex-col h-full max-h-full overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-1 overflow-hidden">
         <MultiConversation
           chatId={id as string}
@@ -87,6 +87,6 @@ export const Chat = (props: Props) => {
         setInput={setInput}
         handleSubmit={handleSubmit}
       />
-    </main>
+    </div>
   );
 };

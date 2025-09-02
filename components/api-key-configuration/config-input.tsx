@@ -11,7 +11,7 @@ type Props = {
   appHref: string;
   appTitle: string;
   getApiKeyHref: string;
-  defaultValue: string;
+  value: string;
   onChange: (value: string) => void;
 };
 
@@ -23,7 +23,7 @@ export const ConfigInput = (props: Props) => {
     appHref,
     appTitle,
     getApiKeyHref,
-    defaultValue,
+    value,
     onChange,
   } = props;
   return (
@@ -52,7 +52,7 @@ export const ConfigInput = (props: Props) => {
       <InputWithClear
         id={id}
         name={name}
-        defaultValue={defaultValue}
+        value={value}
         placeholder={placeholder}
         onChange={(e) => {
           onChange(e.target.value);

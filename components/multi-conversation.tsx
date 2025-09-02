@@ -7,6 +7,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useDialogState } from "@/stores/use-dialog-state";
 import { useModels } from "@/stores/use-models";
 import { Conversation } from "./conversation";
@@ -23,6 +24,7 @@ export const MultiConversation = (props: Props) => {
   const setModelSelectorOpen = useDialogState(
     (state) => state.setModelSelectorOpen,
   );
+  const isMobile = useIsMobile();
   const handleOpenModelSelector = () => {
     setModelSelectorOpen(true);
   };
@@ -33,18 +35,20 @@ export const MultiConversation = (props: Props) => {
   }
 
   const screenWidth = typeof window !== "undefined" ? window.innerWidth : 0;
+  const sidebarWidth = 256;
+  const availableWidth = isMobile ? screenWidth : screenWidth - sidebarWidth;
   const minWidth = 400;
   const maxWidth = 800;
-  const allocationWidth = screenWidth > 500 ? 500 : screenWidth;
+  const allocationWidth = availableWidth > 500 ? 500 : availableWidth;
   const totalAllocatedWidth = selectedModels.length * allocationWidth;
-  const panelGroupWidth = Math.max(totalAllocatedWidth, screenWidth);
+  const panelGroupWidth = Math.max(totalAllocatedWidth, availableWidth);
 
   const defaultSizePercentage = 100 / selectedModels.length;
   const minSizePercentage = (minWidth / panelGroupWidth) * 100;
   const maxSizePercentage = (maxWidth / panelGroupWidth) * 100;
 
   return (
-    <div className="flex h-full w-full overflow-hidden">
+    <div className="flex h-full overflow-hidden">
       {selectedModels.length === 0 && (
         <div className="flex-1 flex flex-col items-center justify-center gap-4">
           <p className="text-gray-500 dark:text-gray-400">
@@ -57,8 +61,9 @@ export const MultiConversation = (props: Props) => {
         </div>
       )}
       {selectedModels.length > 0 && (
-        <div className="overflow-x-auto h-full w-full">
+        <div className="overflow-x-auto h-full flex-1">
           <ResizablePanelGroup
+            key={`panel-group-${selectedModels.length}-${selectedModels.map((m) => m.id).join("-")}`}
             direction="horizontal"
             className="h-full border"
             style={{ minWidth: `${panelGroupWidth}px` }}
@@ -70,7 +75,7 @@ export const MultiConversation = (props: Props) => {
                   minSize={minSizePercentage}
                   maxSize={maxSizePercentage}
                   id={`conversation-${model.id}`}
-                  order={index + 1}
+                  order={index}
                 >
                   <div className="h-full flex flex-col">
                     <Conversation

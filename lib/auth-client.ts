@@ -6,7 +6,6 @@ export const signInWithGithub = async (nextUrl?: string) => {
     provider: "github",
     callbackURL: nextUrl,
   });
-  console.dir(data, { depth: null });
   return data;
 };
 
@@ -15,6 +14,5 @@ export const signInWithGoogle = async (nextUrl?: string) => {
     provider: "google",
     callbackURL: nextUrl,
   });
-  console.dir(data, { depth: null });
   return data;
 };

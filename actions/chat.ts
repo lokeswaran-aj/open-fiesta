@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import db from "@/db/drizzle";
 import {
   type ChatType,
@@ -19,6 +19,21 @@ export const createChat = async (id: string, userId: string) => {
 export const getChat = async (id: string) => {
   const res = await db.select().from(chat).where(eq(chat.id, id)).limit(1);
   return res[0];
+};
+
+export const getChatsByUserId = async (
+  userId: string,
+  limit: number = 20,
+  offset: number = 0,
+) => {
+  const res = await db
+    .select({ id: chat.id, title: chat.title })
+    .from(chat)
+    .where(eq(chat.userId, userId))
+    .orderBy(desc(chat.createdAt))
+    .limit(limit)
+    .offset(offset);
+  return res;
 };
 
 export const getChatWithConversationsWithMessages = async (id: string) => {
@@ -68,6 +83,17 @@ export const getChatWithConversationsWithMessages = async (id: string) => {
     chat: chatInfo,
     conversations: Array.from(grouped.values()),
   };
+};
+
+export const updateChatTitle = async (
+  id: string,
+  userId: string,
+  title: string,
+) => {
+  await db
+    .update(chat)
+    .set({ title })
+    .where(and(eq(chat.id, id), eq(chat.userId, userId)));
 };
 
 export type ConversationsWithMessages = {

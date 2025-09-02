@@ -31,13 +31,13 @@ export const AiMessage = (props: Props) => {
           component={<ModelLogo provider={provider} />}
         />
       </div>
-      <div className="group flex w-full flex-col gap-0">
+      <div className="group flex w-full flex-col gap-0 min-w-0">
         {message.parts.map((part, index) => {
           if (part.type === "text") {
             return (
               <MessageContent
                 key={`${message.id}-${part.type}-${index}`}
-                className="text-foreground prose dark:prose-invert w-full flex-1 rounded-lg bg-transparent p-0"
+                className="text-foreground prose dark:prose-invert w-full flex-1 rounded-lg bg-transparent p-0 min-w-0 break-words"
                 markdown
               >
                 {part.text}
@@ -52,7 +52,7 @@ export const AiMessage = (props: Props) => {
                 <ReasoningTrigger>Reasoning</ReasoningTrigger>
                 <ReasoningContent
                   markdown
-                  className="ml-2 border-l-2 border-l-gray-200 px-2 pb-1 dark:border-l-gray-700 prose dark:prose-invert"
+                  className="ml-2 border-l-2 border-l-gray-200 px-2 pb-1 dark:border-l-gray-700 prose dark:prose-invert min-w-0 break-words"
                 >
                   {part.text}
                 </ReasoningContent>

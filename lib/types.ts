@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface Model {
   id: string;
   name: string;
@@ -66,3 +68,11 @@ export interface VercelPricing {
   input: string;
   output: string;
 }
+
+export const titleSchema = z.object({
+  title: z
+    .string()
+    .describe(
+      "Based on the following first user message, generate a short and clear chat title (max 5 words) that captures the main intent. No punctuation, no quotes, no emojis.",
+    ),
+});
