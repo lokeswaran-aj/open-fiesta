@@ -85,7 +85,9 @@ export const ChatHistory = () => {
               asChild
               onClick={() => router.push(`/c/${item.id}`)}
             >
-              <span className="truncate">{item.title}</span>
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-left">{item.title}</span>
+              </div>
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -115,7 +117,7 @@ export const ChatHistory = () => {
         {hasMore ? (
           <div ref={lastElement}>{loading && <ChatHistorySkeleton />}</div>
         ) : (
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="truncate text-center text-sm text-muted-foreground">
             No more chat history
           </div>
         )}
