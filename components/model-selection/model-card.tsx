@@ -29,7 +29,8 @@ export const ModelCard = ({ model }: Props) => {
   const addSelectedModel = useModels((state) => state.addSelectedModel);
   const selectedModels = useModels((state) => state.selectedModels);
   const removeSelectedModel = useModels((state) => state.removeSelectedModel);
-  const { openConfigDialogFromModelSelector } = useDialogState();
+  const { setModelSelectorOpen } = useDialogState();
+
   const aimlApiKey = useApiKey((state) => state.aimlApiKey);
   const openRouterApiKey = useApiKey((state) => state.openRouterApiKey);
   const vercelApiKey = useApiKey((state) => state.vercelApiKey);
@@ -151,7 +152,8 @@ export const ModelCard = ({ model }: Props) => {
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    openConfigDialogFromModelSelector();
+                    router.push("/api-key");
+                    setModelSelectorOpen(false);
                   }}
                 >
                   <Key className="size-3" strokeWidth={3.5} />

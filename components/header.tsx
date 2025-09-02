@@ -1,5 +1,5 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { ConfigDialog } from "./api-key-configuration/config-dialog";
+import { ConfigApiKey } from "./api-key-configuration/config-api-key";
 import { GitHubLink } from "./github-link";
 import { ModelSelector } from "./model-selection/model-selector";
 import { ThemeSwitcher } from "./theme-switcher";
@@ -11,7 +11,7 @@ export const Header = () => {
         <SidebarTrigger className="-ml-1" />
       </div>
       <div className="flex justify-end items-center gap-2 px-4">
-        <ConfigDialog />
+        <ConfigApiKey />
         <ModelSelector />
         <ThemeSwitcher />
         <GitHubLink />
