@@ -23,7 +23,7 @@ export default async function ChatPage(props: Props) {
   const chat = await getChatWithConversationsWithMessages(id);
 
   return (
-    <main className="flex flex-col h-full max-h-full overflow-hidden">
+    <main className="flex flex-col h-full overflow-hidden">
       <Chat chat={chat} />
     </main>
   );

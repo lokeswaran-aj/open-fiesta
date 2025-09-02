@@ -56,7 +56,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col h-full max-h-full overflow-hidden">
+    <main className="flex flex-col h-full overflow-hidden">
       <div className="flex-1 overflow-hidden">
         <MultiConversation chatId={chatId} />
       </div>

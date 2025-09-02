@@ -9,10 +9,12 @@ export default function ChatLayout({
 }) {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <div className="flex flex-col w-full overflow-hidden">
-        <Header />
-        {children}
+      <div className="flex h-dvh w-full overflow-hidden">
+        <AppSidebar />
+        <div className="flex flex-col flex-1 min-w-0">
+          <Header />
+          <div className="flex-1 overflow-hidden">{children}</div>
+        </div>
       </div>
     </SidebarProvider>
   );
