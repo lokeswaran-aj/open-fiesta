@@ -4,6 +4,7 @@ import type { UIMessage } from "ai";
 import { ArrowUp, Check, Copy, Download, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Fragment, useState } from "react";
+import { toast } from "sonner";
 import { v7 as uuidv7 } from "uuid";
 import {
   ChatContainerContent,
@@ -24,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { imageHelpers } from "@/lib/image-helpers";
 import { cn } from "@/lib/utils";
+import { useRateLimit } from "@/stores/use-rate-limit";
 
 export default function ConversationPromptInput() {
   const [prompt, setPrompt] = useState("");
@@ -32,8 +34,23 @@ export default function ConversationPromptInput() {
   const [copiedAssistantMessage, setCopiedAssistantMessage] = useState(false);
   const [messages, setMessages] = useState<UIMessage[]>([]);
 
+  const {
+    canGenerateImage,
+    incrementImageGeneration,
+    imageGenerationCount,
+    getNextAvailableTime,
+  } = useRateLimit();
+
   const handleSubmit = async () => {
     if (!prompt.trim()) return;
+
+    if (!canGenerateImage()) {
+      const timeRemaining = getNextAvailableTime();
+      toast.error(
+        `You've reached the limit of image generations. Come back in ${timeRemaining}!`,
+      );
+      return;
+    }
 
     setPrompt("");
     setIsLoading(true);
@@ -50,7 +67,10 @@ export default function ConversationPromptInput() {
       method: "POST",
       body: JSON.stringify({ messages: [newUserMessage] }),
     });
-    const data = await response.json();
+    const data: UIMessage = await response.json();
+    if (data.parts.find((part) => part.type === "file")) {
+      incrementImageGeneration();
+    }
     setMessages((prev) => [...prev, data]);
     setIsLoading(false);
   };
@@ -204,6 +224,9 @@ export default function ConversationPromptInput() {
         </ChatContainerContent>
       </ChatContainerRoot>
       <div className="inset-x-0 bottom-0 mx-auto w-full max-w-3xl shrink-0 px-3 pb-3 md:px-5 md:pb-5">
+        <div className="mb-3 text-center text-sm text-muted-foreground">
+          {imageGenerationCount}/10 image generated per day
+        </div>
         <PromptInput
           isLoading={isLoading}
           value={prompt}
