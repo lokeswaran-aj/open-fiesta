@@ -1,5 +1,6 @@
 export const imageHelpers = {
-  base64ToBlob: (base64Data: string, type = "image/png"): Blob => {
+  base64ToBlob: (data: string, type = "image/png"): Blob => {
+    const base64Data = data.split(",")[1];
     const byteString = atob(base64Data);
     const arrayBuffer = new ArrayBuffer(byteString.length);
     const uint8Array = new Uint8Array(arrayBuffer);

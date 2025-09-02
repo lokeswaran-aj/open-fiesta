@@ -1,7 +1,6 @@
-import { google } from "@ai-sdk/google";
-import { convertToModelMessages, generateText, type UIMessage } from "ai";
+import { type GoogleGenerativeAIProviderOptions, google } from "@ai-sdk/google";
+import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { initializeOTEL } from "langsmith/experimental/otel/setup";
-import { v7 as uuidv7 } from "uuid";
 import { auth } from "@/lib/auth";
 
 export const maxDuration = 60;
@@ -21,12 +20,19 @@ export const POST = async (req: Request) => {
     const { messages: messagesData }: { messages: UIMessage[] } =
       await req.json();
 
-    const { content } = await generateText({
+    const lastMessage = messagesData.at(-1);
+    if (!lastMessage) {
+      return new Response("No message provided", { status: 400 });
+    }
+
+    const result = streamText({
       model: google("gemini-2.5-flash-image-preview"),
       providerOptions: {
-        google: { responseModalities: ["TEXT", "IMAGE"] },
+        google: {
+          responseModalities: ["IMAGE"],
+        } as GoogleGenerativeAIProviderOptions,
       },
-      messages: convertToModelMessages(messagesData),
+      messages: convertToModelMessages([lastMessage]),
       system:
         "You are a helpful assistant that generates images based on a prompt.",
       experimental_telemetry: {
@@ -37,9 +43,12 @@ export const POST = async (req: Request) => {
           environment: process.env.NODE_ENV,
         },
       },
+      onFinish: (completion) => {
+        console.dir(completion.totalUsage, { depth: null });
+      },
     });
 
-    return Response.json({ role: "assistant", parts: content, id: uuidv7() });
+    return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error(error);
     return new Response("Internal server error", { status: 500 });

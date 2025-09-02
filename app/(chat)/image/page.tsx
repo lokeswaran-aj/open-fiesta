@@ -1,11 +1,11 @@
 "use client";
 
-import type { UIMessage } from "ai";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 import { ArrowUp, Check, Copy, Download, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
-import { v7 as uuidv7 } from "uuid";
 import {
   ChatContainerContent,
   ChatContainerRoot,
@@ -29,17 +29,31 @@ import { useRateLimit } from "@/stores/use-rate-limit";
 
 export default function ConversationPromptInput() {
   const [prompt, setPrompt] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [copiedUserMessage, setCopiedUserMessage] = useState(false);
-  const [copiedAssistantMessage, setCopiedAssistantMessage] = useState(false);
-  const [messages, setMessages] = useState<UIMessage[]>([]);
-
   const {
     canGenerateImage,
     incrementImageGeneration,
     imageGenerationCount,
     getNextAvailableTime,
   } = useRateLimit();
+
+  const { sendMessage, status, messages } = useChat({
+    transport: new DefaultChatTransport({
+      api: "/api/image",
+    }),
+    onFinish: ({ message }) => {
+      if (message.parts.find((part) => part.type === "file")?.url) {
+        incrementImageGeneration();
+      }
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error("Error generating image");
+    },
+  });
+
+  const hasSubmitted = status === "submitted";
+  const isLoading = status === "streaming" || hasSubmitted;
 
   const handleSubmit = async () => {
     if (!prompt.trim()) return;
@@ -53,26 +67,10 @@ export default function ConversationPromptInput() {
     }
 
     setPrompt("");
-    setIsLoading(true);
 
-    const newUserMessage = {
-      id: uuidv7(),
-      role: "user" as const,
-      parts: [{ type: "text" as const, text: prompt.trim() }],
-    };
-
-    setMessages((prev) => [...prev, newUserMessage]);
-
-    const response = await fetch("/api/image", {
-      method: "POST",
-      body: JSON.stringify({ messages: [newUserMessage] }),
+    sendMessage({
+      text: prompt.trim(),
     });
-    const data: UIMessage = await response.json();
-    if (data.parts.find((part) => part.type === "file")) {
-      incrementImageGeneration();
-    }
-    setMessages((prev) => [...prev, data]);
-    setIsLoading(false);
   };
 
   return (
@@ -92,20 +90,22 @@ export default function ConversationPromptInput() {
               >
                 {isAssistant ? (
                   <div className="group flex w-full flex-col gap-2">
-                    {(() => {
-                      const filePart = message.parts.find(
-                        (part) => part.type === "file" && "file" in part,
-                      );
-
-                      if (
-                        filePart &&
-                        filePart.type === "file" &&
-                        "file" in filePart
-                      ) {
+                    {message.parts.map((part, index) => {
+                      if (part.type === "text") {
                         return (
-                          <Fragment key={`${message.id}-file`}>
+                          <MessageContent
+                            key={`${message.id}-${part.type}-${index}`}
+                            className="text-foreground prose w-full flex-1 rounded-lg bg-transparent p-0"
+                            markdown
+                          >
+                            {part.text}
+                          </MessageContent>
+                        );
+                      } else if (part.type === "file") {
+                        return (
+                          <Fragment key={`${message.id}-${part.type}-${index}`}>
                             <Image
-                              src={`data:image/png;base64,${(filePart.file as { base64Data: string }).base64Data}`}
+                              src={part.url}
                               alt={"Generated image"}
                               height={384}
                               width={384}
@@ -121,10 +121,7 @@ export default function ConversationPromptInput() {
                                   size="icon"
                                   className="rounded-full"
                                   onClick={() => {
-                                    const base64Data = (
-                                      filePart.file as { base64Data: string }
-                                    ).base64Data;
-                                    imageHelpers.downloadImage(base64Data);
+                                    imageHelpers.downloadImage(part.url);
                                   }}
                                 >
                                   <Download />
@@ -133,53 +130,9 @@ export default function ConversationPromptInput() {
                             </MessageActions>
                           </Fragment>
                         );
-                      } else {
-                        const textPart = message.parts.find(
-                          (part) => part.type === "text",
-                        );
-                        if (textPart && textPart.type === "text") {
-                          return (
-                            <Fragment key={`${message.id}-text`}>
-                              <MessageContent
-                                key={`${message.id}-text`}
-                                className="text-foreground prose w-full flex-1 rounded-lg bg-transparent p-0"
-                                markdown
-                              >
-                                {textPart.text}
-                              </MessageContent>
-                              <MessageActions className="flex gap-0">
-                                <MessageAction
-                                  tooltip="Copy"
-                                  delayDuration={100}
-                                >
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="rounded-full"
-                                    onClick={() => {
-                                      navigator.clipboard.writeText(
-                                        textPart.text,
-                                      );
-                                      setCopiedAssistantMessage(true);
-                                      setTimeout(() => {
-                                        setCopiedAssistantMessage(false);
-                                      }, 1000);
-                                    }}
-                                  >
-                                    {copiedAssistantMessage ? (
-                                      <Check />
-                                    ) : (
-                                      <Copy />
-                                    )}
-                                  </Button>
-                                </MessageAction>
-                              </MessageActions>
-                            </Fragment>
-                          );
-                        }
                       }
                       return null;
-                    })()}
+                    })}
                   </div>
                 ) : (
                   <div className="group flex flex-col items-end gap-1">
@@ -218,7 +171,7 @@ export default function ConversationPromptInput() {
               </Message>
             );
           })}
-          {isLoading && (
+          {hasSubmitted && (
             <Skeleton className="h-96 w-full max-w-96 animate-pulse rounded-lg" />
           )}
         </ChatContainerContent>
