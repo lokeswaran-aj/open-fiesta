@@ -1,12 +1,14 @@
 "use client";
 
 import type { User } from "better-auth";
-import { ChevronsUpDown, LogIn } from "lucide-react";
+import { ChevronsUpDown, KeyRound, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -101,13 +103,17 @@ export function NavUser(props: Props) {
                 </div>
               </div>
             </DropdownMenuLabel>
-            {/* <DropdownMenuSeparator />
-             <DropdownMenuGroup>
-              <DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={() => {
+                  router.push("/api-key");
+                }}
+              >
                 <KeyRound />
                 Configure API Key
               </DropdownMenuItem>
-            </DropdownMenuGroup> */}
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <Logout />
           </DropdownMenuContent>
