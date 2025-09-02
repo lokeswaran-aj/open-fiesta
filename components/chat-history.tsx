@@ -19,7 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useChat } from "@/stores/use-chat";
+import { useHistory } from "@/stores/use-history";
 import { Skeleton } from "./ui/skeleton";
 
 const LIMIT = 30;
@@ -38,7 +38,7 @@ export const ChatHistory = () => {
     setHasMore,
     loading,
     setLoading,
-  } = useChat();
+  } = useHistory();
 
   const observerRef = useRef<IntersectionObserver>(null);
 

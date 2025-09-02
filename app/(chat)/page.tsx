@@ -10,6 +10,7 @@ import { MultiConversation } from "@/components/multi-conversation";
 import { useTitle } from "@/hooks/use-title";
 import { authClient } from "@/lib/auth-client";
 import { useConversationIds } from "@/stores/use-conversation-ids";
+import { useHistory } from "@/stores/use-history";
 import { useInitialPrompt } from "@/stores/use-initial-prompt";
 import { useModels } from "@/stores/use-models";
 
@@ -23,6 +24,10 @@ export default function Home() {
   const createConversationId = useConversationIds(
     (state) => state.createConversationId,
   );
+  const addLatestChatToHistory = useHistory(
+    (state) => state.addLatestChatToHistory,
+  );
+
   const chatId = uuidv7();
   const userId = authClient.useSession().data?.user.id;
 
@@ -43,7 +48,8 @@ export default function Home() {
         };
       });
 
-      await createChat(chatId, userId);
+      const newChat = await createChat(chatId, userId);
+      addLatestChatToHistory(newChat);
       submit({ input: initialPrompt, chatId });
       await createConversation(newConversations);
 

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { ChatType } from "@/db/schema";
 
-type ChatStore = {
+type HistoryStore = {
   chatId: string;
   setChatId: (chatId: string) => void;
   title: string;
@@ -9,6 +9,8 @@ type ChatStore = {
   history: ChatType[];
   setHistory: (history: ChatType[]) => void;
   addToHistory: (chats: ChatType[]) => void;
+  addLatestChatToHistory: (chat: ChatType) => void;
+  updateLatestChatTitle: (title: string) => void;
   offset: number;
   setOffset: (offset: number) => void;
   hasMore: boolean;
@@ -17,7 +19,7 @@ type ChatStore = {
   setLoading: (loading: boolean) => void;
 };
 
-export const useChat = create<ChatStore>()((set) => ({
+export const useHistory = create<HistoryStore>()((set) => ({
   chatId: "",
   setChatId: (chatId: string) => set({ chatId }),
   title: "New Chat",
@@ -27,6 +29,16 @@ export const useChat = create<ChatStore>()((set) => ({
   addToHistory: (chats: ChatType[]) =>
     set((state) => ({
       history: [...state.history, ...chats],
+    })),
+  addLatestChatToHistory: (chat: ChatType) =>
+    set((state) => ({
+      history: [chat, ...state.history],
+    })),
+  updateLatestChatTitle: (title: string) =>
+    set((state) => ({
+      history: state.history.map((chat) =>
+        chat.id === state.history[0].id ? { ...chat, title } : chat,
+      ),
     })),
   offset: 0,
   setOffset: (offset: number) => set({ offset }),
