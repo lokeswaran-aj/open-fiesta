@@ -21,12 +21,15 @@ import {
   PromptInputTextarea,
 } from "@/components/prompt-kit/prompt-input";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { imageHelpers } from "@/lib/image-helpers";
 import { cn } from "@/lib/utils";
 
 export default function ConversationPromptInput() {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copiedUserMessage, setCopiedUserMessage] = useState(false);
+  const [copiedAssistantMessage, setCopiedAssistantMessage] = useState(false);
   const [messages, setMessages] = useState<UIMessage[]>([]);
 
   const handleSubmit = async () => {
@@ -54,17 +57,16 @@ export default function ConversationPromptInput() {
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <ChatContainerRoot className="relative flex-1 space-y-0 overflow-y-auto px-4 py-12">
-        <ChatContainerContent className="space-y-6 px-4 py-12">
+      <ChatContainerRoot className="relative flex-1 space-y-0 overflow-y-auto">
+        <ChatContainerContent className="space-y-6 px-4 py-12 mx-auto w-full max-w-3xl md:px-6">
           {messages.map((message) => {
-            console.log(message);
             const isAssistant = message.role === "assistant";
 
             return (
               <Message
                 key={message.id}
                 className={cn(
-                  "mx-auto flex w-full max-w-3xl flex-col gap-2 px-0 md:px-6",
+                  "flex flex-col gap-2 px-0",
                   isAssistant ? "items-start" : "items-end",
                 )}
               >
@@ -85,8 +87,9 @@ export default function ConversationPromptInput() {
                             <Image
                               src={`data:image/png;base64,${(filePart.file as { base64Data: string }).base64Data}`}
                               alt={"Generated image"}
-                              height={400}
-                              width={400}
+                              height={384}
+                              width={384}
+                              className="rounded-lg shadow-lg"
                             />
                             <MessageActions className="-ml-2.5 flex gap-0">
                               <MessageAction
@@ -97,6 +100,12 @@ export default function ConversationPromptInput() {
                                   variant="ghost"
                                   size="icon"
                                   className="rounded-full"
+                                  onClick={() => {
+                                    const base64Data = (
+                                      filePart.file as { base64Data: string }
+                                    ).base64Data;
+                                    imageHelpers.downloadImage(base64Data);
+                                  }}
                                 >
                                   <Download />
                                 </Button>
@@ -110,13 +119,42 @@ export default function ConversationPromptInput() {
                         );
                         if (textPart && textPart.type === "text") {
                           return (
-                            <MessageContent
-                              key={`${message.id}-text`}
-                              className="text-foreground prose w-full flex-1 rounded-lg bg-transparent p-0"
-                              markdown
-                            >
-                              {textPart.text}
-                            </MessageContent>
+                            <Fragment key={`${message.id}-text`}>
+                              <MessageContent
+                                key={`${message.id}-text`}
+                                className="text-foreground prose w-full flex-1 rounded-lg bg-transparent p-0"
+                                markdown
+                              >
+                                {textPart.text}
+                              </MessageContent>
+                              <MessageActions className="flex gap-0">
+                                <MessageAction
+                                  tooltip="Copy"
+                                  delayDuration={100}
+                                >
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="rounded-full"
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(
+                                        textPart.text,
+                                      );
+                                      setCopiedAssistantMessage(true);
+                                      setTimeout(() => {
+                                        setCopiedAssistantMessage(false);
+                                      }, 1000);
+                                    }}
+                                  >
+                                    {copiedAssistantMessage ? (
+                                      <Check />
+                                    ) : (
+                                      <Copy />
+                                    )}
+                                  </Button>
+                                </MessageAction>
+                              </MessageActions>
+                            </Fragment>
                           );
                         }
                       }
@@ -129,7 +167,7 @@ export default function ConversationPromptInput() {
                       if (part.type === "text") {
                         return (
                           <Fragment key={`${message.id}-${part.type}-${index}`}>
-                            <MessageContent className="bg-muted text-primary min-w-fit max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
+                            <MessageContent className="bg-primary text-primary-foreground min-w-fit max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
                               {part.text}
                             </MessageContent>
                             <MessageActions className="flex gap-0">
@@ -140,13 +178,13 @@ export default function ConversationPromptInput() {
                                   className="rounded-full"
                                   onClick={() => {
                                     navigator.clipboard.writeText(part.text);
-                                    setCopied(true);
+                                    setCopiedUserMessage(true);
                                     setTimeout(() => {
-                                      setCopied(false);
+                                      setCopiedUserMessage(false);
                                     }, 1000);
                                   }}
                                 >
-                                  {copied ? <Check /> : <Copy />}
+                                  {copiedUserMessage ? <Check /> : <Copy />}
                                 </Button>
                               </MessageAction>
                             </MessageActions>
@@ -160,6 +198,9 @@ export default function ConversationPromptInput() {
               </Message>
             );
           })}
+          {isLoading && (
+            <Skeleton className="h-96 w-full max-w-96 animate-pulse rounded-lg" />
+          )}
         </ChatContainerContent>
       </ChatContainerRoot>
       <div className="inset-x-0 bottom-0 mx-auto w-full max-w-3xl shrink-0 px-3 pb-3 md:px-5 md:pb-5">
