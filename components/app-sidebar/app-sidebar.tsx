@@ -1,10 +1,10 @@
 "use client";
 
 import type * as React from "react";
-import { AppLogo } from "@/components/app-logo";
-import { ChatHistory } from "@/components/chat-history";
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
+import { AppLogo } from "@/components/app-sidebar/app-logo";
+import { ChatHistory } from "@/components/app-sidebar/chat-history";
+import { NavMain } from "@/components/app-sidebar/nav-main";
+import { NavUser } from "@/components/app-sidebar/nav-user";
 import {
   Sidebar,
   SidebarContent,

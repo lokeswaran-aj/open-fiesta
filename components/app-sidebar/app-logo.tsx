@@ -6,7 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import Icons from "./ui/icons";
+import Icons from "../ui/icons";
 
 export const AppLogo = () => {
   const router = useRouter();

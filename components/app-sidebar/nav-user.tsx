@@ -21,8 +21,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Logout } from "./logout";
-import Icons from "./ui/icons";
+import { Logout } from "../logout";
+import Icons from "../ui/icons";
 
 type Props = {
   user: User | undefined;
