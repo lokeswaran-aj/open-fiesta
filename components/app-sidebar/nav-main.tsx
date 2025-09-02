@@ -1,6 +1,6 @@
 "use client";
 
-import { SquarePen } from "lucide-react";
+import { Image, SquarePen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   SidebarGroup,
@@ -24,6 +24,17 @@ export const NavMain = () => {
           >
             <SquarePen />
             <span>New Chat</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            tooltip="Generate Image"
+            onClick={() => {
+              router.push("/image");
+            }}
+          >
+            <Image />
+            <span>Generate Image</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
