@@ -81,3 +81,20 @@ export async function DELETE(req: Request) {
     return new Response("Internal server error", { status: 500 });
   }
 }
+
+export async function PUT(req: Request) {
+  const { input, chatId } = await req.json();
+
+  const session = await auth.api.getSession({
+    headers: req.headers,
+  });
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  await updateChatTitle(chatId, userId, input);
+
+  return NextResponse.json({ message: "Chat title updated" });
+}

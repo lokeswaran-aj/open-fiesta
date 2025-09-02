@@ -1,9 +1,10 @@
 "use client";
 
-import { MoreHorizontal, Pen, Trash2 } from "lucide-react";
+import { Check, MoreHorizontal, Pen, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   SidebarGroup,
   SidebarMenu,
@@ -27,6 +29,8 @@ const LIMIT = 30;
 export const ChatHistory = () => {
   const { isMobile } = useSidebar();
   const router = useRouter();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
 
   const {
     history,
@@ -86,42 +90,118 @@ export const ChatHistory = () => {
     router.replace("/");
   };
 
+  const handleRenameClick = (chatId: string, currentTitle: string) => {
+    setEditingId(chatId);
+    setEditingTitle(currentTitle);
+  };
+
+  const handleRenameSave = async (chatId: string) => {
+    try {
+      await fetch(`/api/title`, {
+        method: "PUT",
+        body: JSON.stringify({ input: editingTitle, chatId }),
+      });
+
+      setHistory(
+        history.map((item) =>
+          item.id === chatId ? { ...item, title: editingTitle } : item,
+        ),
+      );
+
+      setEditingId(null);
+      setEditingTitle("");
+      toast.success("Chat title updated");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update chat title");
+    }
+  };
+
+  const handleRenameCancel = () => {
+    setEditingId(null);
+    setEditingTitle("");
+  };
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarMenu>
         {history.map((item, index) => (
           <SidebarMenuItem key={`${item.id}-${index}`}>
-            <SidebarMenuButton
-              asChild
-              onClick={() => router.push(`/c/${item.id}`)}
-            >
-              <div className="min-w-0 flex-1">
-                <span className="block truncate text-left">{item.title}</span>
+            {editingId === item.id ? (
+              <div className="min-w-0 flex-1 flex items-center gap-1 px-3 py-2">
+                <Input
+                  value={editingTitle}
+                  onChange={(e) => setEditingTitle(e.target.value)}
+                  className="h-6 text-sm border-none bg-transparent p-0 focus-visible:ring-0 flex-1"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleRenameSave(item.id);
+                    } else if (e.key === "Escape") {
+                      handleRenameCancel();
+                    }
+                  }}
+                />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 hover:bg-accent"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRenameSave(item.id);
+                  }}
+                >
+                  <Check className="h-3 w-3" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 hover:bg-accent"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRenameCancel();
+                  }}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
               </div>
-            </SidebarMenuButton>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuAction showOnHover>
-                  <MoreHorizontal />
-                  <span className="sr-only">More</span>
-                </SidebarMenuAction>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-48 rounded-lg"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
+            ) : (
+              <SidebarMenuButton
+                asChild
+                onClick={() => router.push(`/c/${item.id}`)}
               >
-                <DropdownMenuItem>
-                  <Pen className="text-muted-foreground" />
-                  <span>Rename</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleDeleteChat(item.id)}>
-                  <Trash2 className="text-destructive" />
-                  <span className="text-destructive">Delete</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <div className="min-w-0 flex-1">
+                  <span className="block truncate text-left">{item.title}</span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <SidebarMenuAction showOnHover>
+                        <MoreHorizontal />
+                        <span className="sr-only">More</span>
+                      </SidebarMenuAction>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-48 rounded-lg"
+                      side={isMobile ? "bottom" : "right"}
+                      align={isMobile ? "end" : "start"}
+                    >
+                      <DropdownMenuItem
+                        onClick={() => handleRenameClick(item.id, item.title)}
+                      >
+                        <Pen className="text-muted-foreground" />
+                        <span>Rename</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => handleDeleteChat(item.id)}
+                      >
+                        <Trash2 className="text-destructive" />
+                        <span className="text-destructive">Delete</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </SidebarMenuButton>
+            )}
           </SidebarMenuItem>
         ))}
         {hasMore ? (
