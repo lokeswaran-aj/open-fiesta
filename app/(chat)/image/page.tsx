@@ -4,6 +4,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ArrowUp, Check, Copy, Download, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -23,12 +24,15 @@ import {
 } from "@/components/prompt-kit/prompt-input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { authClient } from "@/lib/auth-client";
 import { imageHelpers } from "@/lib/image-helpers";
 import { cn } from "@/lib/utils";
 import { useRateLimit } from "@/stores/use-rate-limit";
 
 export default function ConversationPromptInput() {
+  const { data } = authClient.useSession();
   const [prompt, setPrompt] = useState("");
+  const router = useRouter();
   const [copiedUserMessage, setCopiedUserMessage] = useState(false);
   const {
     canGenerateImage,
@@ -56,6 +60,11 @@ export default function ConversationPromptInput() {
   const isLoading = status === "streaming" || hasSubmitted;
 
   const handleSubmit = async () => {
+    if (!data?.user) {
+      router.push("/auth?next=/image");
+      return;
+    }
+
     if (!prompt.trim()) return;
 
     if (!canGenerateImage()) {
