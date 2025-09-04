@@ -74,8 +74,6 @@ export const MultiConversation = (props: Props) => {
                   defaultSize={defaultSizePercentage}
                   minSize={minSizePercentage}
                   maxSize={maxSizePercentage}
-                  id={`conversation-${model.id}`}
-                  order={index}
                 >
                   <div className="h-full flex flex-col">
                     <Conversation
