@@ -31,7 +31,7 @@ type Props = {
 export function NavUser(props: Props) {
   const { user } = props;
   const router = useRouter();
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const { setTheme } = useTheme();
 
   const toggleTheme = React.useCallback(() => {
@@ -46,6 +46,7 @@ export function NavUser(props: Props) {
             tooltip="Login"
             onClick={() => {
               router.push("/auth");
+              isMobile && setOpenMobile(false);
             }}
           >
             <LogIn />
@@ -116,6 +117,9 @@ export function NavUser(props: Props) {
               <DropdownMenuItem
                 onClick={() => {
                   router.push("/api-key");
+                  if (isMobile) {
+                    setOpenMobile(false);
+                  }
                 }}
               >
                 <KeyRound />

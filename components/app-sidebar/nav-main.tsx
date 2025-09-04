@@ -7,10 +7,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 export const NavMain = () => {
   const router = useRouter();
+  const { setOpenMobile, isMobile } = useSidebar();
 
   return (
     <SidebarGroup>
@@ -20,6 +22,7 @@ export const NavMain = () => {
             tooltip="New Chat"
             onClick={() => {
               router.push("/");
+              isMobile && setOpenMobile(false);
             }}
           >
             <SquarePen />
@@ -31,6 +34,7 @@ export const NavMain = () => {
             tooltip="Generate Image"
             onClick={() => {
               router.push("/image");
+              isMobile && setOpenMobile(false);
             }}
           >
             <Image />

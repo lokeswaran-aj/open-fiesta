@@ -10,7 +10,7 @@ import { ChatHistoryItem, ChatHistorySkeleton } from "./index";
 const LIMIT = 30;
 
 export const ChatHistory = () => {
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
@@ -112,6 +112,7 @@ export const ChatHistory = () => {
   const handleClick = (chatId: string) => {
     router.push(`/c/${chatId}`);
     setTitle(history.find((item) => item.id === chatId)?.title || "New Chat");
+    isMobile && setOpenMobile(false);
   };
 
   return (
