@@ -132,6 +132,10 @@ export default function ImagePage() {
       text: prompt.trim(),
       files: files.length > 0 ? files[0] : undefined,
     });
+
+    if (uploadInputRef?.current) {
+      uploadInputRef.current.value = "";
+    }
   };
 
   return (
