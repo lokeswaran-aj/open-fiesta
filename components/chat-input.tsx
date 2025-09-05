@@ -93,7 +93,8 @@ export const ChatInput = (props: ChatInputProps) => {
         <PromptInputTextarea placeholder="Spill the tea..." autoFocus />
 
         <PromptInputActions className="flex items-center justify-between gap-2 pt-2">
-          <PromptInputAction tooltip="Attach files">
+          <div />
+          {/* <PromptInputAction tooltip="Attach files">
             <label
               htmlFor="file-upload"
               className="hover:bg-secondary-foreground/10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-2xl"
@@ -108,7 +109,7 @@ export const ChatInput = (props: ChatInputProps) => {
               />
               <Paperclip className="text-primary size-5" />
             </label>
-          </PromptInputAction>
+          </PromptInputAction> */}
 
           <PromptInputAction
             tooltip={

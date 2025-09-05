@@ -2,11 +2,12 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { ArrowUp, Check, Copy, Download, Loader2 } from "lucide-react";
+import { Check, Copy, Download } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { toast } from "sonner";
+import { ImageInput } from "@/components/image-input";
 import {
   ChatContainerContent,
   ChatContainerRoot,
@@ -17,11 +18,6 @@ import {
   MessageActions,
   MessageContent,
 } from "@/components/prompt-kit/message";
-import {
-  PromptInput,
-  PromptInputActions,
-  PromptInputTextarea,
-} from "@/components/prompt-kit/prompt-input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
@@ -32,6 +28,61 @@ import { useRateLimit } from "@/stores/use-rate-limit";
 export default function ImagePage() {
   const { data } = authClient.useSession();
   const [prompt, setPrompt] = useState("");
+
+  const [files, setFiles] = useState<FileList[]>([]);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = event.target.files;
+    if (selectedFiles) {
+      if (selectedFiles.length > 1) {
+        toast.error("Please select only one image file");
+        if (uploadInputRef?.current) {
+          uploadInputRef.current.value = "";
+        }
+        return;
+      }
+
+      const file = selectedFiles[0];
+
+      const validImageTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
+        "image/svg+xml",
+      ];
+
+      if (!validImageTypes.includes(file.type)) {
+        toast.error(
+          "Please select a valid image file (JPEG, JPG, PNG, WEBP or SVG)",
+        );
+        if (uploadInputRef?.current) {
+          uploadInputRef.current.value = "";
+        }
+        return;
+      }
+
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        toast.error("Image file size must be less than 5MB");
+        if (uploadInputRef?.current) {
+          uploadInputRef.current.value = "";
+        }
+        return;
+      }
+
+      setFiles([selectedFiles]);
+    }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    if (uploadInputRef?.current) {
+      uploadInputRef.current.value = "";
+    }
+  };
+
   const router = useRouter();
   const [copiedUserMessage, setCopiedUserMessage] = useState(false);
   const {
@@ -41,7 +92,7 @@ export default function ImagePage() {
     getNextAvailableTime,
   } = useRateLimit();
 
-  const { sendMessage, status, messages } = useChat({
+  const { sendMessage, status, messages, stop } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/image",
     }),
@@ -75,9 +126,11 @@ export default function ImagePage() {
     }
 
     setPrompt("");
+    setFiles([]);
 
-    sendMessage({
+    await sendMessage({
       text: prompt.trim(),
+      files: files.length > 0 ? files[0] : undefined,
     });
   };
 
@@ -188,41 +241,17 @@ export default function ImagePage() {
         <div className="mb-3 text-center text-sm text-muted-foreground">
           {imageGenerationCount}/10 image generated per day
         </div>
-        <PromptInput
+        <ImageInput
+          input={prompt}
+          setInput={setPrompt}
+          handleSubmit={handleSubmit}
           isLoading={isLoading}
-          value={prompt}
-          onValueChange={setPrompt}
-          onSubmit={handleSubmit}
-          className="border-input relative z-10 w-full rounded-3xl border p-0 pt-1 shadow-xs bg-input"
-        >
-          <div className="flex flex-col">
-            <PromptInputTextarea
-              aria-label="Image prompt"
-              autoFocus
-              name="image-prompt"
-              id="image-prompt"
-              placeholder="Drop your wildest image idea here 🤯✨"
-              className="min-h-[44px] pt-3 pl-4 text-base leading-[1.3] sm:text-base md:text-base"
-            />
-
-            <PromptInputActions className="pt-2 flex w-full items-center justify-end gap-2 px-3 pb-3">
-              <div className="flex items-center gap-2">
-                <Button
-                  size="icon"
-                  disabled={!prompt.trim() || isLoading}
-                  onClick={handleSubmit}
-                  className="size-9 rounded-full"
-                >
-                  {isLoading ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <ArrowUp size={18} />
-                  )}
-                </Button>
-              </div>
-            </PromptInputActions>
-          </div>
-        </PromptInput>
+          stop={stop}
+          files={files}
+          handleFileChange={handleFileChange}
+          handleRemoveFile={handleRemoveFile}
+          uploadInputRef={uploadInputRef}
+        />
       </div>
     </div>
   );
