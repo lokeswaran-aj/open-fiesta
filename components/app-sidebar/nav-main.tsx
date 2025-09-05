@@ -39,7 +39,7 @@ export const NavMain = () => {
           >
             <Image />
             <span>Generate Image</span>
-            <span className="ml-auto rounded-full bg-purple-500 px-2 py-0.5 text-xs font-medium text-white animate-bounce">
+            <span className="ml-auto rounded-full bg-purple-500 px-2 py-0.5 text-xs font-medium text-white animate-caret-blink">
               New
             </span>
           </SidebarMenuButton>
