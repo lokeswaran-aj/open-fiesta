@@ -42,7 +42,7 @@ export const ImageInput = (props: ImageInputProps) => {
   };
 
   return (
-    <div className="flex-shrink-0 flex flex-col items-center gap-2 p-4 border-t border-gray-300 dark:border-gray-700">
+    <div className="flex-shrink-0 flex flex-col items-center gap-2 p-4">
       <PromptInput
         value={input}
         onValueChange={setInput}

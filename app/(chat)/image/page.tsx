@@ -224,6 +224,18 @@ export default function ImagePage() {
                             </MessageActions>
                           </Fragment>
                         );
+                      } else if (part.type === "file") {
+                        return (
+                          <Fragment key={`${message.id}-${part.type}-${index}`}>
+                            <Image
+                              src={part.url}
+                              alt={part.filename || "Uploaded image"}
+                              height={384}
+                              width={384}
+                              className="rounded-lg shadow-lg"
+                            />
+                          </Fragment>
+                        );
                       }
                       return null;
                     })}
