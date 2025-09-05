@@ -29,7 +29,7 @@ import { imageHelpers } from "@/lib/image-helpers";
 import { cn } from "@/lib/utils";
 import { useRateLimit } from "@/stores/use-rate-limit";
 
-export default function ConversationPromptInput() {
+export default function ImagePage() {
   const { data } = authClient.useSession();
   const [prompt, setPrompt] = useState("");
   const router = useRouter();
@@ -56,8 +56,7 @@ export default function ConversationPromptInput() {
     },
   });
 
-  const hasSubmitted = status === "submitted";
-  const isLoading = status === "streaming" || hasSubmitted;
+  const isLoading = status === "streaming" || status === "submitted";
 
   const handleSubmit = async () => {
     if (!data?.user) {
@@ -180,7 +179,7 @@ export default function ConversationPromptInput() {
               </Message>
             );
           })}
-          {hasSubmitted && (
+          {isLoading && (
             <Skeleton className="h-96 w-full max-w-96 animate-pulse rounded-lg" />
           )}
         </ChatContainerContent>

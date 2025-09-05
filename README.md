@@ -32,9 +32,7 @@ With Open Fiesta, you can:
 - Vercel AI SDK
 - Vercel AI Gateway
 - OpenRouter
-- AIMLAPI
 - PromptKit
-- TogetherAI
 - Better Auth
 
 ---
