@@ -52,6 +52,7 @@ const InputWithClear = React.forwardRef<HTMLInputElement, InputWithClearProps>(
     return (
       <div className="relative">
         <Input
+          type="password"
           ref={ref}
           value={currentValue}
           className={cn("pr-8", className)}
