@@ -1,12 +1,6 @@
 # 🎉 Open Fiesta
 
-**Open Fiesta** is an open-source alternative to [AI Fiesta](https://aifiesta.ai), built entirely with **Vercel’s cutting-edge ecosystem** — including Next.js, AI SDK, AI Gateway, OpenRouter, AIMLAPI, Shadcn UI, PromptKit, TogetherAI, Tailwind CSS, and TypeScript.
-
-With Open Fiesta, you can:
-
-- Chat with **multiple top AI models** (ChatGPT, Gemini Pro, Claude, Perplexity, DeepSeek, Grok — and more 🚀)
-- **Compare responses side-by-side** in real-time
-- Pick the **best AI for your workflow** without switching tabs
+**Open Fiesta** is an AI chat application with 200+ AI models like OpenAI, Gemini, Claude, Perplexity, Deepseek, and Grok in one place. Compare multiple AI model responses side-by-side in real-time and choose the best AI for every task
 
 ---
 
