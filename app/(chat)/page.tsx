@@ -62,7 +62,9 @@ export default function Home() {
       }
 
       // Kick off async title generation in parallel (don't await)
-      submit({ input: initialPrompt, chatId });
+      if (initialPrompt.trim().length > 0) {
+        submit({ input: initialPrompt, chatId });
+      }
 
       // Ensure conversations exist before navigating so streaming can start right away
       await createConversation(newConversations);
