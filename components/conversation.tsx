@@ -3,6 +3,7 @@
 import type { UIMessage } from "ai";
 import type { ConversationsWithMessages } from "@/actions/chat";
 import type { Model } from "@/lib/types";
+import { useConversationIds } from "@/stores/use-conversation-ids";
 import { ModelLogo } from "./model-selection/model-logo";
 import { Thread } from "./thread";
 
@@ -14,6 +15,8 @@ type Props = {
 
 export const Conversation = (props: Props) => {
   const { model, chatId, conversation } = props;
+  const getConversationId = useConversationIds((state) => state.getConversationId);
+  const conversationId = conversation?.conversation.id ?? getConversationId(model.id);
 
   return (
     <div className="flex flex-1 h-full w-full flex-col overflow-hidden">
@@ -23,13 +26,13 @@ export const Conversation = (props: Props) => {
           <h3 className="font-medium text-sm">{model.name}</h3>
         </div>
       </div>
-      {conversation && (
+      {conversationId && (
         <Thread
           model={model}
           chatId={chatId}
-          conversationId={conversation.conversation.id}
+          conversationId={conversationId}
           initialMessages={
-            conversation.messages.map((message) => ({
+            (conversation?.messages ?? []).map((message) => ({
               id: message.id,
               role: message.role as "user" | "assistant",
               parts: message.parts,
