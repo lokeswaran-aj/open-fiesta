@@ -33,8 +33,10 @@ export const Chat = (props: Props) => {
   const setTitle = useHistory((state) => state.setTitle);
 
   useEffect(() => {
-    if (chat) {
-      setTitle(chat.chat.title);
+    if (!chat) return;
+    const serverTitle = chat.chat.title;
+    if (serverTitle && serverTitle !== "New Chat") {
+      setTitle(serverTitle);
     }
   }, [chat, setTitle]);
 
