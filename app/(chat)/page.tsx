@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { v7 as uuidv7 } from "uuid";
-import { createChat } from "@/actions/chat";
+import { createChat, updateChatTitle } from "@/actions/chat";
 import { createConversation } from "@/actions/conversation";
 import { ChatInput } from "@/components/chat-input";
 import { MultiConversation } from "@/components/multi-conversation";
@@ -26,6 +26,10 @@ export default function Home() {
   );
   const addLatestChatToHistory = useHistory(
     (state) => state.addLatestChatToHistory,
+  );
+  const setTitle = useHistory((state) => state.setTitle);
+  const updateLatestChatTitle = useHistory(
+    (state) => state.updateLatestChatTitle,
   );
 
   const chatId = uuidv7();
@@ -50,7 +54,19 @@ export default function Home() {
 
       const newChat = await createChat(chatId, userId);
       addLatestChatToHistory(newChat);
+
+      // Set a temporary title immediately using the first user message
+      if (initialPrompt.trim().length > 0) {
+        setTitle(initialPrompt);
+        updateLatestChatTitle(initialPrompt);
+        // Persist the temporary title so the chat page reflects it immediately
+        await updateChatTitle(chatId, userId, initialPrompt);
+      }
+
+      // Kick off async title generation in parallel (don't await)
       submit({ input: initialPrompt, chatId });
+
+      // Ensure conversations exist before navigating so streaming can start right away
       await createConversation(newConversations);
 
       router.push(`/c/${chatId}`);
