@@ -1,7 +1,6 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ConfigApiKey } from "./api-key-configuration/config-api-key";
 import { ChatTitle } from "./chat-title";
-import { GitHubLink } from "./github-link";
 import { ModelSelector } from "./model-selection/model-selector";
 
 export const Header = () => {
@@ -14,7 +13,6 @@ export const Header = () => {
       <div className="flex justify-end items-center gap-2 px-4">
         <ConfigApiKey />
         <ModelSelector />
-        <GitHubLink />
       </div>
     </header>
   );
